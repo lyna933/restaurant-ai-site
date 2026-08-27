@@ -1,6 +1,5 @@
 import express from "express";
 import path from "path";
-import { createServer as createViteServer } from "vite";
 import dotenv from "dotenv";
 import Stripe from "stripe";
 import { inferBrandCategory, getAccurateDishImage, generateCustomCategoryDishes } from "./server/restaurantGenerator.js";
@@ -2445,6 +2444,7 @@ ${sourceList || "No source URL was returned."}`;
 // Vite & Static file handling
 async function startServer() {
   if (process.env.NODE_ENV !== "production") {
+    const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
