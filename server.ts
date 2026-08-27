@@ -3,9 +3,9 @@ import path from "path";
 import { createServer as createViteServer } from "vite";
 import dotenv from "dotenv";
 import Stripe from "stripe";
-import { inferBrandCategory, getAccurateDishImage, generateCustomCategoryDishes } from "./server/restaurantGenerator";
-import { callGemini, getGeminiConfig, researchRestaurantWithGemini } from "./server/geminiClient";
-import { getTavilyConfig, researchReviewPlatformsForBranches } from "./server/tavilyClient";
+import { inferBrandCategory, getAccurateDishImage, generateCustomCategoryDishes } from "./server/restaurantGenerator.js";
+import { callGemini, getGeminiConfig, researchRestaurantWithGemini } from "./server/geminiClient.js";
+import { getTavilyConfig, researchReviewPlatformsForBranches } from "./server/tavilyClient.js";
 
 dotenv.config();
 

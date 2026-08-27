@@ -1,4 +1,4 @@
-import { getTavilyConfig, researchRestaurantWithTavily } from "./tavilyClient";
+import { getTavilyConfig, researchRestaurantWithTavily } from "./tavilyClient.js";
 
 export interface GroundingSource {
   title: string;
@@ -182,7 +182,7 @@ First identify the brand's verified Chinese name and aliases. Then find direct b
     ...(globalChineseSocial.status === "fulfilled" ? [globalChineseSocial.value] : []),
   ];
   const aliasSourceTitles = webResearchValues
-    .flatMap((value) => value.sources)
+    .flatMap((value) => value.sources as readonly { title: string }[])
     .slice(0, 20)
     .map((source) => source.title)
     .join("; ");
