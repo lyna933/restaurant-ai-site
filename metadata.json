@@ -1,0 +1,7 @@
+{
+  "name": "Starbucks Coffee Hub",
+  "description": "Official Starbucks Coffee ordering and link hub with real-time GPS nearby store locator, mobile order & pay (啡快), genuine multi-channel payment verification, and official Starbucks social media.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
