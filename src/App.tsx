@@ -32,6 +32,7 @@ import { ConciergeInquiryModal } from './components/ConciergeInquiryModal';
 import { QRCodeModal } from './components/QRCodeModal';
 import { ToastNotification } from './components/ToastNotification';
 import { TRANSLATIONS } from './utils/translations';
+import { brandThemeStyle, inferBrandStyle, layoutClassName } from './utils/brandTheme';
 
 import { 
   Sparkles, 
@@ -156,6 +157,7 @@ export default function App() {
     () => applyBrandLocalization(currentBrand, brandLocalizations[localizationKey], language),
     [brandLocalizations, currentBrand, language, localizationKey],
   );
+  const brandStyle = useMemo(() => inferBrandStyle(displayBrand), [displayBrand]);
 
   useEffect(() => {
     const htmlLanguages: Record<Language, string> = {
@@ -512,9 +514,18 @@ export default function App() {
 
   return (
     <div 
-      className="min-h-screen text-neutral-900 flex flex-col antialiased transition-colors duration-500"
-      style={{ backgroundColor: displayBrand.bgColor || '#F4F9F6' }}
+      className={`brand-shell min-h-screen text-neutral-900 flex flex-col antialiased transition-colors duration-500 ${layoutClassName(brandStyle.layoutMode)}`}
+      data-brand-canvas
+      data-visual-style={brandStyle.visualStyle}
+      data-card-shape={brandStyle.cardShape}
+      data-pattern={brandStyle.patternStyle}
+      style={brandThemeStyle(displayBrand, brandStyle)}
     >
+      <div className="brand-atmosphere" aria-hidden="true">
+        {Array.from({ length: 14 }, (_, index) => (
+          <span key={index}>{brandStyle.motifs[index % brandStyle.motifs.length]}</span>
+        ))}
+      </div>
       
       {/* Header with Multi-Tenant Switcher, Brand Hero and Navigation */}
       <Header
@@ -528,63 +539,63 @@ export default function App() {
         activeSection={activeSection}
         onScrollToSection={handleScrollToSection}
         nearestStore={displayStores[0]}
+        styleProfile={brandStyle}
       />
 
       {/* Main Content Area: Strictly Ordered into 4 Sections */}
-      <main className="flex-1 max-w-4xl w-full mx-auto px-3.5 sm:px-4 py-6 space-y-8">
+      <main className="brand-content-grid flex-1 max-w-6xl w-full mx-auto px-3.5 sm:px-5 py-7">
         
         {/* SECTION 1: Social Media Matrix (社交媒体) */}
-        <SocialsSection
-          socials={directSocialProfiles}
-          language={language}
-          onShowToast={showToast}
-          researchProvider={displayBrand.researchProvider}
-          sourceCount={displayBrand.sources?.length || 0}
-        />
-
-        {/* Divider */}
-        <div className="h-px my-2 bg-neutral-200" />
+        <div className="brand-grid-social brand-section-wrap">
+          <SocialsSection
+            socials={directSocialProfiles}
+            language={language}
+            onShowToast={showToast}
+            researchProvider={displayBrand.researchProvider}
+            sourceCount={displayBrand.sources?.length || 0}
+          />
+        </div>
 
         {/* SECTION 2: Customer Reviews & AI Ratings (用户评价) */}
-        <RateUsSection
-          reviews={reviews}
-          stores={displayStores}
-          language={language}
-          brand={displayBrand}
-          onLikeReview={handleLikeReview}
-          onShowToast={showToast}
-        />
-
-        {/* Divider */}
-        <div className="h-px my-2 bg-neutral-200" />
+        <div className="brand-grid-reviews brand-section-wrap">
+          <RateUsSection
+            reviews={reviews}
+            stores={displayStores}
+            language={language}
+            brand={displayBrand}
+            onLikeReview={handleLikeReview}
+            onShowToast={showToast}
+          />
+        </div>
 
         {/* SECTION 3: Official Menu & Stores (精选菜单与门店) */}
-        <MenuDisplaySection
-          stores={displayStores}
-          selectedStoreId={selectedStoreId}
-          onSelectStore={setSelectedStoreId}
-          menu={displayBrand.menu}
-          language={language}
-          currentLocation={currentLocation}
-          onOpenLocationModal={() => setIsLocationModalOpen(true)}
-          onTriggerGPS={() => handleTriggerGPS(false)}
-          isLocating={isLocating}
-          onShowToast={showToast}
-          brandId={displayBrand.id}
-          brandPrimaryColor={displayBrand.primaryColor}
-        />
-
-        {/* Divider */}
-        <div className="h-px my-2 bg-neutral-200" />
+        <div className="brand-grid-menu brand-section-wrap">
+          <MenuDisplaySection
+            stores={displayStores}
+            selectedStoreId={selectedStoreId}
+            onSelectStore={setSelectedStoreId}
+            menu={displayBrand.menu}
+            language={language}
+            currentLocation={currentLocation}
+            onOpenLocationModal={() => setIsLocationModalOpen(true)}
+            onTriggerGPS={() => handleTriggerGPS(false)}
+            isLocating={isLocating}
+            onShowToast={showToast}
+            brandId={displayBrand.id}
+            brandPrimaryColor={displayBrand.primaryColor}
+          />
+        </div>
 
         {/* SECTION 4: Contact & Hotline (联系方式) */}
-        <ContactHotlineSection
-          brand={displayBrand}
-          stores={displayStores}
-          language={language}
-          onOpenConciergeModal={() => setIsConciergeOpen(true)}
-          onShowToast={showToast}
-        />
+        <div className="brand-grid-contact brand-section-wrap">
+          <ContactHotlineSection
+            brand={displayBrand}
+            stores={displayStores}
+            language={language}
+            onOpenConciergeModal={() => setIsConciergeOpen(true)}
+            onShowToast={showToast}
+          />
+        </div>
 
       </main>
 

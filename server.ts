@@ -395,6 +395,47 @@ const generatedBrandMatchesInput = (brand: any, cleanName: string) => {
   );
 };
 
+const normalizeStyleProfile = (brand: any) => {
+  const allowed = {
+    visualStyle: new Set(["playful", "minimal", "heritage", "street", "editorial"]),
+    layoutMode: new Set(["bento", "showcase", "story", "gallery"]),
+    displayFont: new Set(["rounded", "modern", "serif", "condensed"]),
+    cardShape: new Set(["soft", "pill", "sharp", "organic"]),
+    patternStyle: new Set(["confetti", "stamp", "waves", "grid", "minimal"]),
+  };
+  const supplied = brand?.styleProfile || {};
+  const identity = `${brand?.name || ""} ${brand?.nameZh || ""} ${brand?.cuisineType || ""} ${brand?.cuisineTypeZh || ""}`.toLowerCase();
+  const fallbackStyle = /mixue|蜜雪|ice cream|dessert|甜品|milk tea|奶茶|boba/.test(identity)
+    ? "playful"
+    : /burger|汉堡|fried chicken|炸鸡|pizza/.test(identity)
+      ? "street"
+      : /hot\s?pot|火锅|sichuan|川味|hunan|湘菜|bbq|烧烤/.test(identity)
+        ? "heritage"
+        : /coffee|cafe|咖啡|tea|茶|bakery/.test(identity)
+          ? "minimal"
+          : "editorial";
+  const defaults: Record<string, any> = {
+    playful: { layoutMode: "bento", displayFont: "rounded", cardShape: "organic", patternStyle: "confetti", motifs: ["✦", "♡", "●", "✺"] },
+    minimal: { layoutMode: "gallery", displayFont: "modern", cardShape: "soft", patternStyle: "minimal", motifs: ["—", "○", "·", "◇"] },
+    heritage: { layoutMode: "story", displayFont: "serif", cardShape: "soft", patternStyle: "stamp", motifs: ["◆", "☰", "✦", "◉"] },
+    street: { layoutMode: "showcase", displayFont: "condensed", cardShape: "sharp", patternStyle: "grid", motifs: ["★", "⚡", "＋", "●"] },
+    editorial: { layoutMode: "showcase", displayFont: "serif", cardShape: "sharp", patternStyle: "waves", motifs: ["✦", "◇", "—", "○"] },
+  };
+  const visualStyle = allowed.visualStyle.has(supplied.visualStyle) ? supplied.visualStyle : fallbackStyle;
+  const base = defaults[visualStyle];
+  brand.styleProfile = {
+    visualStyle,
+    layoutMode: allowed.layoutMode.has(supplied.layoutMode) ? supplied.layoutMode : base.layoutMode,
+    displayFont: allowed.displayFont.has(supplied.displayFont) ? supplied.displayFont : base.displayFont,
+    cardShape: allowed.cardShape.has(supplied.cardShape) ? supplied.cardShape : base.cardShape,
+    patternStyle: allowed.patternStyle.has(supplied.patternStyle) ? supplied.patternStyle : base.patternStyle,
+    motifs: Array.isArray(supplied.motifs) && supplied.motifs.length
+      ? supplied.motifs.filter((value: any) => typeof value === "string" && value.trim()).slice(0, 6).map((value: string) => value.slice(0, 4))
+      : base.motifs,
+    atmosphere: typeof supplied.atmosphere === "string" ? supplied.atmosphere.slice(0, 90) : "Restaurant-led visual identity",
+  };
+};
+
 const normalizeGroundedBrand = async (
   brand: any,
   cleanName: string,
@@ -429,6 +470,7 @@ const normalizeGroundedBrand = async (
   const hasSupportedSource = (value: unknown) => isHttpUrl(value) && supportedSourceUrls.has(value);
   const hasSupportedMapSource = (value: unknown) => isHttpUrl(value) && supportedMapSourceUrls.has(value);
   brand.sources = sources.slice(0, 40);
+  normalizeStyleProfile(brand);
   brand.generationMode = "web-grounded";
   brand.researchProvider = researchProvider;
   brand.officialSiteUrl = isDirectMerchantUrl(brand.officialSiteUrl) && hasSupportedSource(brand.officialSiteUrl)
@@ -1531,7 +1573,8 @@ Resolve ambiguous merchants by city, coordinates and cuisine. Use the supplied e
 2) global direct merchant/profile/listing pages on Instagram, Facebook, TikTok/Douyin, YouTube, X/Twitter, Threads, LinkedIn, Pinterest, Xiaohongshu, Weibo, Yelp, TripAdvisor, Google Maps, OpenTable, Foursquare, Zomato, Restaurant Guru, HappyCow, Trustpilot, Dianping/Meituan, Uber Eats, DoorDash and Grubhub where available. Xiaohongshu can be a verified brand profile or a brand-specific note because users comment on notes rather than through a universal merchant-review form;
 3) real branches near the device coordinates or requested city first. If the Maps evidence explicitly says no exact local branch was found and provides global fallback locations, return those real global branches and do not describe them as nearby;
 4) real menu items and prices from an official menu/order page or credible menu listing;
-5) usable merchant or dish photos. Every photo must include imageSourceUrl linking to the page that contains that image.
+5) usable merchant or dish photos. Every photo must include imageSourceUrl linking to the page that contains that image;
+6) a distinctive design direction derived from the exact merchant's cuisine, brand identity, packaging, interiors and any sourced mascot or signature symbol. This must change composition, typography, shapes and patterns—not only colors. Use symbolic text motifs, never invent a trademarked mascot image.
 
 Never invent data. Never use a platform homepage as a merchant profile. Never reuse generic sample dishes or stock photos. Omit any social, store, menu item, phone, price or image that lacks a supporting source URL. Unknown numeric values must be 0. Return 6-12 sourced menu items and up to 16 sourced social/review/order links when evidence is available. Return up to 5 Google Maps branches ordered nearest-first.
 
@@ -1539,6 +1582,7 @@ Return JSON only with this shape:
 {
   "id":"${brandId}", "name":"", "nameZh":"", "tagline":"", "taglineZh":"",
   "logo":"", "logoSourceUrl":"", "heroBanner":"", "heroBannerSourceUrl":"", "primaryColor":"${targetColor || "#B91C1C"}", "accentColor":"#FEE2E2", "bgColor":"#FFF8F8", "cardBg":"#FFFFFF",
+  "styleProfile":{"visualStyle":"playful|minimal|heritage|street|editorial","layoutMode":"bento|showcase|story|gallery","displayFont":"rounded|modern|serif|condensed","cardShape":"soft|pill|sharp|organic","motifs":["4 to 6 short symbols, emoji or one-character brand cues"],"patternStyle":"confetti|stamp|waves|grid|minimal","atmosphere":"short English art direction"},
   "verifiedBadge":false, "officialSiteUrl":"", "hotline":"", "hotlineLabel":"", "hotlineLabelZh":"", "cateringEmail":"",
   "cuisineType":"", "cuisineTypeZh":"",
   "socials":[{"id":"", "name":"", "nameZh":"", "handle":"", "url":"", "icon":"ExternalLink", "followers":"", "badge":"Merchant page", "color":"#111827", "bgColor":"bg-neutral-50 text-neutral-700 border-neutral-200", "sourceUrl":"", "sourceTitle":""}],
@@ -2349,6 +2393,7 @@ ${sourceList || "No source URL was returned."}`;
       };
     }
 
+    normalizeStyleProfile(fallbackBrand);
     const fallbackIdentityBrand = { name: fallbackBrand.name, nameZh: fallbackBrand.nameZh };
     fallbackBrand.generationMode = "template";
     fallbackBrand.dataQuality = "unverified";

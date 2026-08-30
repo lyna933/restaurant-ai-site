@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { BrandConfig, Language, StoreLocation } from '../types';
+import { BrandConfig, BrandStyleProfile, Language, StoreLocation } from '../types';
 import { TRANSLATIONS, LANGUAGE_OPTIONS } from '../utils/translations';
 import { 
   CheckCircle2, 
@@ -24,6 +24,7 @@ interface HeaderProps {
   activeSection: string;
   onScrollToSection: (sectionId: string) => void;
   nearestStore?: StoreLocation;
+  styleProfile: BrandStyleProfile;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -36,7 +37,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenShare,
   activeSection,
   onScrollToSection,
-  nearestStore
+  nearestStore,
+  styleProfile,
 }) => {
   const t = TRANSLATIONS[language] || TRANSLATIONS.en;
   const isZh = language === 'zh' || language === 'zh-TW';
@@ -188,17 +190,23 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Main Profile Hero Card with Dynamic Brand Gradient */}
       <div 
-        className="relative text-white pt-5 pb-5 px-4 shadow-md transition-colors duration-500"
+        className="brand-hero relative text-white px-4 shadow-md transition-all duration-500 overflow-hidden"
         style={{
-          background: `linear-gradient(180deg, ${brand.primaryColor} 0%, #171717 100%)`
+          backgroundImage: brand.heroBanner
+            ? `linear-gradient(110deg, ${brand.primaryColor}F2 0%, ${brand.primaryColor}BF 44%, #111827D9 100%), url(${brand.heroBanner})`
+            : `linear-gradient(120deg, ${brand.primaryColor} 0%, #171717 100%)`
         }}
       >
-        
-        <div className="max-w-4xl mx-auto flex flex-col items-center text-center relative z-10">
+        <div className="brand-hero-pattern" aria-hidden="true">
+          {Array.from({ length: 12 }, (_, index) => (
+            <span key={index}>{styleProfile.motifs[index % styleProfile.motifs.length]}</span>
+          ))}
+        </div>
+        <div className="brand-hero-inner max-w-6xl mx-auto flex flex-col relative z-10">
           
           {/* Logo Avatar */}
-          <div className="relative mb-2 group">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-white/95 shadow-xl overflow-hidden bg-white flex items-center justify-center p-1">
+          <div className="brand-logo-lockup relative mb-3 group">
+            <div className="brand-logo-frame w-20 h-20 sm:w-24 sm:h-24 border-2 border-white/95 shadow-xl overflow-hidden bg-white flex items-center justify-center p-1">
               {brand.logo ? (
                 <img
                   src={brand.logo}
@@ -224,17 +232,17 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Brand Name & Tagline */}
-          <div className="flex flex-col items-center gap-1 justify-center max-w-lg">
-            <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white font-sans">
+          <div className="brand-title-lockup flex flex-col gap-1 justify-center max-w-2xl">
+            <h1 className="brand-display-title text-3xl sm:text-5xl font-black tracking-tight text-white">
               {isZh ? brand.nameZh : brand.name}
             </h1>
-            <p className="text-xs text-white/80 line-clamp-2 px-2">
+            <p className="brand-tagline text-sm sm:text-base text-white/85 line-clamp-2">
               {isZh ? brand.taglineZh : brand.tagline}
             </p>
           </div>
 
           {/* Quick Metrics Bar */}
-          <div className="mt-2.5 flex items-center justify-center gap-3 sm:gap-4 text-xs text-white/90 bg-black/35 backdrop-blur-xs px-3 py-1 rounded-xl border border-white/10">
+          <div className="brand-metrics mt-4 flex items-center gap-3 sm:gap-4 text-xs text-white/90 bg-black/35 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/10">
             <div className="flex items-center gap-1">
               <Star className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
               <span className="font-bold text-white">{verifiedRating || '--'}</span>
