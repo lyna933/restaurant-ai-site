@@ -67,7 +67,7 @@ export const Header: React.FC<HeaderProps> = ({
     <header id="brand-header" className="w-full relative z-20">
       
       {/* Top Banner with Multi-Brand Switcher / Language Dropdown / AI Workflow trigger */}
-      <div className="bg-neutral-950 text-neutral-200 text-xs py-1.5 px-4 shadow-xs border-b border-neutral-800">
+      <div className="brand-toolbar bg-neutral-950 text-neutral-200 text-xs py-1.5 px-4 shadow-xs border-b border-neutral-800">
         <div className="max-w-4xl mx-auto flex items-center justify-between gap-2">
           
           {/* Brand Switcher & AI Generator Trigger */}
@@ -193,7 +193,7 @@ export const Header: React.FC<HeaderProps> = ({
         className="brand-hero relative text-white px-4 shadow-md transition-all duration-500 overflow-hidden"
         style={{
           backgroundImage: brand.heroBanner
-            ? `linear-gradient(110deg, ${brand.primaryColor}F2 0%, ${brand.primaryColor}BF 44%, #111827D9 100%), url(${brand.heroBanner})`
+            ? `linear-gradient(180deg, transparent 18%, ${brand.primaryColor}26 52%, #111827E6 100%), url(${brand.heroBanner})`
             : `linear-gradient(120deg, ${brand.primaryColor} 0%, #171717 100%)`
         }}
       >

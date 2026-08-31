@@ -380,7 +380,7 @@ export const RateUsSection: React.FC<RateUsSectionProps> = ({
   return (
     <section id="section-reviews" className="scroll-mt-16 space-y-4">
       {/* Section Header */}
-      <div className="flex items-center justify-between mb-1">
+      <div className="brand-section-heading flex items-center justify-between mb-1">
         <div className="flex items-center gap-2.5">
           <span 
             className="w-8 h-8 rounded-xl text-white flex items-center justify-center font-bold text-sm shadow-xs"
@@ -397,7 +397,7 @@ export const RateUsSection: React.FC<RateUsSectionProps> = ({
       </div>
 
       {/* --- DIRECT RATING & AI POLISH CARD --- */}
-      <div className="bg-white rounded-2xl p-4 sm:p-5 border border-neutral-200 shadow-xs space-y-4">
+      <div className="review-composer bg-white rounded-2xl p-4 sm:p-5 border border-neutral-200 shadow-xs space-y-4">
         
         {/* Step 1: Select Platform */}
         <div>
@@ -408,7 +408,7 @@ export const RateUsSection: React.FC<RateUsSectionProps> = ({
             </span>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <div className="review-platform-grid grid grid-cols-2 sm:grid-cols-4 gap-2">
             {reviewApps.map((app) => {
               const isSelected = selectedApp === app.id;
               return (
@@ -416,7 +416,7 @@ export const RateUsSection: React.FC<RateUsSectionProps> = ({
                   key={app.id}
                   type="button"
                   onClick={() => setSelectedApp(app.id)}
-                  className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                  className={`review-platform-card p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
                     isSelected
                       ? 'border-neutral-900 bg-neutral-50 ring-2 ring-neutral-900 shadow-xs'
                       : 'border-neutral-200 hover:border-neutral-300 bg-white'
