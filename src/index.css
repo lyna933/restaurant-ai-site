@@ -586,3 +586,145 @@
   .brand-section-heading::before { left: 8%; }
   .brand-section-heading::after { right: 8%; }
 }
+
+/* Accessible switcher + compact restaurant character board. */
+.brand-toolbar {
+  position: sticky;
+  top: 8px;
+  z-index: 120;
+  isolation: isolate;
+}
+.brand-toolbar #header-brand-switcher { min-height: 32px; }
+.brand-toolbar #header-brand-switcher + div {
+  z-index: 140 !important;
+  max-height: min(62vh, 440px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.brand-hero { z-index: 0; padding-top: 8.4rem !important; }
+.brand-mascot-board {
+  position: absolute;
+  z-index: 0;
+  top: 1rem;
+  left: 50%;
+  width: min(320px, calc(100% - 72px));
+  height: 118px;
+  transform: translateX(-50%) rotate(-1deg);
+  overflow: visible;
+  pointer-events: none;
+  border: 3px solid rgba(255,255,255,.88);
+  border-radius: 42px 18px 40px 22px;
+  background-color: color-mix(in srgb, var(--brand-primary) 76%, var(--brand-accent));
+  background-position: center;
+  background-size: cover;
+  box-shadow: 0 15px 34px rgba(17,24,39,.18);
+}
+.brand-mascot-board::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at 50% 100%, rgba(255,255,255,.32), transparent 58%);
+}
+.brand-mascot-main {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 50%;
+  display: grid;
+  width: 82px;
+  height: 82px;
+  place-items: center;
+  transform: translate(-50%, -50%) rotate(3deg);
+  border: 4px solid white;
+  border-radius: 50%;
+  background: rgba(255,255,255,.94);
+  color: var(--brand-primary);
+  font-size: 3.25rem;
+  line-height: 1;
+  box-shadow: 0 10px 24px rgba(17,24,39,.2);
+}
+.brand-sticker {
+  position: absolute;
+  z-index: 3;
+  display: grid;
+  min-width: 38px;
+  min-height: 38px;
+  padding: .25rem;
+  place-items: center;
+  border: 3px solid white;
+  border-radius: 16px 8px 14px 10px;
+  background: color-mix(in srgb, var(--brand-accent) 50%, white);
+  color: var(--brand-primary);
+  font-size: 1.35rem;
+  font-weight: 900;
+  line-height: 1;
+  box-shadow: 0 8px 18px rgba(17,24,39,.16);
+}
+.brand-sticker-1 { left: -14px; top: 12px; transform: rotate(-13deg); }
+.brand-sticker-2 { right: -12px; top: 8px; transform: rotate(12deg); }
+.brand-sticker-3 { left: 24px; bottom: -15px; transform: rotate(8deg); }
+.brand-sticker-4 { right: 30px; bottom: -14px; transform: rotate(-9deg); }
+.brand-sticker-5 { right: 50%; top: -18px; transform: translateX(50%) rotate(5deg); }
+.brand-hero-inner { z-index: 5; }
+.brand-logo-lockup { margin-top: -1.6rem; }
+.brand-logo-frame { width: 84px !important; height: 84px !important; }
+
+.brand-shell[data-visual-style="playful"] .brand-display-title,
+.brand-shell[data-visual-style="playful"] .brand-section-heading h2 {
+  font-family: "Arial Rounded MT Bold", "Trebuchet MS", Poppins, sans-serif !important;
+  letter-spacing: -.045em !important;
+}
+.brand-shell[data-visual-style="heritage"] .brand-display-title,
+.brand-shell[data-visual-style="heritage"] .brand-section-heading h2 {
+  font-family: Georgia, "Times New Roman", serif !important;
+  letter-spacing: -.025em !important;
+}
+.brand-shell[data-visual-style="street"] .brand-display-title,
+.brand-shell[data-visual-style="street"] .brand-section-heading h2 {
+  font-family: Impact, "Arial Narrow", Poppins, sans-serif !important;
+  letter-spacing: .025em !important;
+  text-transform: uppercase !important;
+}
+.brand-shell[data-visual-style="minimal"] .brand-display-title,
+.brand-shell[data-visual-style="minimal"] .brand-section-heading h2 {
+  font-family: Inter, "Helvetica Neue", Arial, sans-serif !important;
+  font-weight: 750 !important;
+  letter-spacing: -.055em !important;
+}
+
+.brand-shell[data-visual-style="playful"] .social-link-card:nth-child(odd),
+.brand-shell[data-visual-style="playful"] .menu-product-card:nth-child(3n+1) { transform: rotate(-.35deg); }
+.brand-shell[data-visual-style="playful"] .social-link-card:nth-child(even),
+.brand-shell[data-visual-style="playful"] .menu-product-card:nth-child(3n+2) { transform: rotate(.3deg); }
+.brand-shell[data-visual-style="street"] .social-link-card,
+.brand-shell[data-visual-style="street"] .menu-product-card { border-radius: 12px !important; }
+.brand-shell[data-visual-style="heritage"] .social-link-card,
+.brand-shell[data-visual-style="heritage"] .menu-product-card { border-radius: 24px 8px 24px 8px !important; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .brand-mascot-main { animation: mascot-bob 3.8s ease-in-out infinite; }
+  .brand-sticker-1, .brand-sticker-4 { animation: sticker-float-a 4.6s ease-in-out infinite; }
+  .brand-sticker-2, .brand-sticker-3 { animation: sticker-float-b 5.1s ease-in-out infinite; }
+}
+@keyframes mascot-bob {
+  0%, 100% { transform: translate(-50%, -50%) rotate(3deg); }
+  50% { transform: translate(-50%, calc(-50% - 7px)) rotate(-3deg); }
+}
+@keyframes sticker-float-a {
+  0%, 100% { margin-top: 0; }
+  50% { margin-top: -7px; }
+}
+@keyframes sticker-float-b {
+  0%, 100% { margin-top: 0; }
+  50% { margin-top: 6px; }
+}
+
+@media (max-width: 430px) {
+  .brand-toolbar { top: 6px; }
+  .brand-hero { padding-top: 7.8rem !important; }
+  .brand-mascot-board { width: min(286px, calc(100% - 64px)); height: 106px; }
+  .brand-mascot-main { width: 72px; height: 72px; font-size: 2.75rem; }
+  .brand-sticker { min-width: 34px; min-height: 34px; font-size: 1.15rem; }
+  .brand-logo-frame { width: 78px !important; height: 78px !important; }
+}

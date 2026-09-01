@@ -193,6 +193,20 @@ export const Header: React.FC<HeaderProps> = ({
         className="brand-hero relative text-white px-4 shadow-md transition-all duration-500 overflow-hidden"
         style={{ backgroundColor: 'transparent' }}
       >
+        <div
+          className="brand-mascot-board"
+          aria-hidden="true"
+          style={brand.heroBanner ? {
+            backgroundImage: `linear-gradient(90deg, ${brand.primaryColor}CC, ${brand.primaryColor}66), url(${brand.heroBanner})`,
+          } : undefined}
+        >
+          <span className="brand-mascot-main">{styleProfile.motifs[0] || '✦'}</span>
+          {styleProfile.motifs.slice(1, 6).map((motif, index) => (
+            <span className={`brand-sticker brand-sticker-${index + 1}`} key={`${motif}-${index}`}>
+              {motif}
+            </span>
+          ))}
+        </div>
         <div className="brand-hero-pattern" aria-hidden="true">
           {Array.from({ length: 12 }, (_, index) => (
             <span key={index}>{styleProfile.motifs[index % styleProfile.motifs.length]}</span>
