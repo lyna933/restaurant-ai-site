@@ -191,11 +191,7 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Main Profile Hero Card with Dynamic Brand Gradient */}
       <div 
         className="brand-hero relative text-white px-4 shadow-md transition-all duration-500 overflow-hidden"
-        style={{
-          backgroundImage: brand.heroBanner
-            ? `linear-gradient(180deg, transparent 18%, ${brand.primaryColor}26 52%, #111827E6 100%), url(${brand.heroBanner})`
-            : `linear-gradient(120deg, ${brand.primaryColor} 0%, #171717 100%)`
-        }}
+        style={{ backgroundColor: 'transparent' }}
       >
         <div className="brand-hero-pattern" aria-hidden="true">
           {Array.from({ length: 12 }, (_, index) => (
@@ -259,7 +255,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {nearestStore && (
-            <div className="mt-2 flex max-w-2xl items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-black/25 px-3 py-1 text-[11px] text-white/85">
+            <div className="brand-nearest-store mt-2 flex max-w-2xl items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-black/25 px-3 py-1 text-[11px] text-white/85">
               <span className="font-bold text-amber-300">{/(?:km|mi)$/i.test(nearestStore.distance || '') ? nearestStore.distance : '-- km'}</span>
               <span>{nearestStore.locationScope === 'global'
                 ? (isZh ? '全球已核验门店' : 'verified global location')
@@ -270,7 +266,7 @@ export const Header: React.FC<HeaderProps> = ({
           )}
 
           {/* Navigation Anchors: 1. Socials, 2. Reviews, 3. Order, 4. Contact */}
-          <nav aria-label={isZh ? '页面导航' : 'Sections'} className="mt-4 w-full flex items-center justify-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+          <nav aria-label={isZh ? '页面导航' : 'Sections'} className="brand-section-nav mt-4 w-full flex items-center justify-center gap-2 overflow-x-auto pb-1 no-scrollbar">
             
             <button
               id="nav-socials"
