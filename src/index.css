@@ -728,3 +728,114 @@
   .brand-sticker { min-width: 34px; min-height: 34px; font-size: 1.15rem; }
   .brand-logo-frame { width: 78px !important; height: 78px !important; }
 }
+
+/* Full-bleed restaurant artwork with stickers moved to section titles. */
+.brand-shell {
+  background-size: 100% 100%, 148px 148px;
+}
+.brand-atmosphere { opacity: .09; }
+.brand-atmosphere span { font-size: 2rem !important; }
+
+.brand-hero {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 1rem .75rem !important;
+  overflow: visible !important;
+}
+.brand-mascot-board {
+  position: relative;
+  top: auto;
+  left: auto;
+  z-index: 0;
+  width: calc(100% + 2rem);
+  height: clamp(230px, 42vw, 330px);
+  margin-left: -1rem;
+  transform: none;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  background-color: color-mix(in srgb, var(--brand-primary) 76%, var(--brand-accent));
+  background-position: center;
+  background-size: cover;
+  box-shadow: none;
+}
+.brand-mascot-board::after { display: none; }
+.brand-mascot-main {
+  width: auto;
+  height: auto;
+  border: 0;
+  background: transparent;
+  color: rgba(255,255,255,.92);
+  font-size: 6rem;
+  box-shadow: none;
+  text-shadow: 0 12px 28px rgba(17,24,39,.24);
+}
+.brand-hero-inner,
+.brand-shell[data-visual-style="playful"] .brand-hero-inner {
+  margin-top: -52px;
+}
+.brand-logo-lockup { margin-top: 0; }
+.brand-logo-frame,
+.brand-shell[data-visual-style="playful"] .brand-logo-frame,
+.brand-shell[data-visual-style="street"] .brand-logo-frame {
+  width: 108px !important;
+  height: 108px !important;
+  border-width: 5px !important;
+}
+
+.brand-section-heading::before,
+.brand-section-heading::after {
+  top: 50%;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 3px solid rgba(255,255,255,.92);
+  border-radius: 16px 8px 15px 10px;
+  background: color-mix(in srgb, var(--brand-accent) 48%, white);
+  color: var(--brand-primary);
+  font-size: 1.3rem;
+  box-shadow: 0 10px 22px rgba(17,24,39,.16);
+}
+.brand-section-heading::before {
+  content: var(--brand-motif-2);
+  left: 19%;
+  transform: translateY(-50%) rotate(-11deg);
+}
+.brand-section-heading::after {
+  content: var(--brand-motif-3);
+  right: 19%;
+  transform: translateY(-50%) rotate(10deg);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .brand-section-heading::before { animation: title-sticker-a 4.6s ease-in-out infinite; }
+  .brand-section-heading::after { animation: title-sticker-b 5.2s ease-in-out infinite; }
+}
+@keyframes title-sticker-a {
+  0%, 100% { margin-top: 0; }
+  50% { margin-top: -5px; }
+}
+@keyframes title-sticker-b {
+  0%, 100% { margin-top: 0; }
+  50% { margin-top: 5px; }
+}
+
+@media (max-width: 720px) {
+  .brand-hero { padding: 0 12px .75rem !important; }
+  .brand-mascot-board { width: calc(100% + 24px); margin-left: -12px; }
+  .brand-section-heading::before { left: 12%; }
+  .brand-section-heading::after { right: 12%; }
+}
+
+@media (max-width: 430px) {
+  .brand-hero { padding-top: 0 !important; }
+  .brand-mascot-board { height: 245px; }
+  .brand-hero-inner { margin-top: -46px; }
+  .brand-logo-frame { width: 94px !important; height: 94px !important; }
+  .brand-section-heading::before,
+  .brand-section-heading::after { width: 36px; height: 36px; font-size: 1.05rem; }
+  .brand-section-heading::before { left: 2%; }
+  .brand-section-heading::after { right: 2%; }
+}

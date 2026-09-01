@@ -106,6 +106,8 @@ export function brandThemeStyle(brand: BrandConfig, profile: BrandStyleProfile) 
     '--brand-card': brand.cardBg || '#FFFFFF',
     '--brand-radius': cardRadius,
     '--brand-motif': `"${profile.motifs[0] || '✦'}"`,
+    '--brand-motif-2': `"${profile.motifs[1] || profile.motifs[0] || '♡'}"`,
+    '--brand-motif-3': `"${profile.motifs[2] || profile.motifs[0] || '✦'}"`,
   } as CSSProperties;
 }
 

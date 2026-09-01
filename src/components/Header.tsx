@@ -197,20 +197,10 @@ export const Header: React.FC<HeaderProps> = ({
           className="brand-mascot-board"
           aria-hidden="true"
           style={brand.heroBanner ? {
-            backgroundImage: `linear-gradient(90deg, ${brand.primaryColor}CC, ${brand.primaryColor}66), url(${brand.heroBanner})`,
+            backgroundImage: `linear-gradient(180deg, transparent 40%, ${brand.primaryColor}1A 72%, ${brand.primaryColor}66 100%), url(${brand.heroBanner})`,
           } : undefined}
         >
-          <span className="brand-mascot-main">{styleProfile.motifs[0] || '✦'}</span>
-          {styleProfile.motifs.slice(1, 6).map((motif, index) => (
-            <span className={`brand-sticker brand-sticker-${index + 1}`} key={`${motif}-${index}`}>
-              {motif}
-            </span>
-          ))}
-        </div>
-        <div className="brand-hero-pattern" aria-hidden="true">
-          {Array.from({ length: 12 }, (_, index) => (
-            <span key={index}>{styleProfile.motifs[index % styleProfile.motifs.length]}</span>
-          ))}
+          {!brand.heroBanner && <span className="brand-mascot-main">{styleProfile.motifs[0] || '✦'}</span>}
         </div>
         <div className="brand-hero-inner max-w-6xl mx-auto flex flex-col relative z-10">
           
