@@ -839,3 +839,25 @@
   .brand-section-heading::before { left: 2%; }
   .brand-section-heading::after { right: 2%; }
 }
+
+/* Final no-sticker override. Keep the verified artwork and content hierarchy only. */
+.brand-atmosphere,
+.brand-sticker,
+.brand-mascot-main {
+  display: none !important;
+}
+
+#section-socials .brand-section-heading {
+  display: flex !important;
+}
+
+.brand-section-heading {
+  padding-inline: .25rem !important;
+}
+
+.brand-section-heading::before,
+.brand-section-heading::after {
+  content: none !important;
+  display: none !important;
+  animation: none !important;
+}

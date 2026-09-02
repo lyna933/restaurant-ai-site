@@ -162,6 +162,9 @@ const getCuratedVerifiedSocials = (cleanName: string, brand: any) => {
   const isHeytea = identities.some((identity) =>
     identity.includes("heytea") || identity.includes("喜茶"),
   );
+  const isTaier = identities.some((identity) =>
+    identity.includes("taier") || identity.includes("太二酸菜鱼") || identity === "太二",
+  );
   const profiles: any[] = [];
 
   if (isHeytea) {
@@ -240,6 +243,39 @@ const getCuratedVerifiedSocials = (cleanName: string, brand: any) => {
         bgColor: "bg-rose-50 text-rose-700 border-rose-200",
         sourceUrl: "https://www.xiaohongshu.com/user/profile/607fc46e000000000101f156",
         sourceTitle: "海底捞火锅—美国 · 小红书号 27769365676",
+      },
+    );
+  }
+
+  if (isTaier) {
+    profiles.push(
+      {
+        id: "curated-weibo-taier",
+        name: "Weibo",
+        nameZh: "太二酸菜鱼官方微博",
+        handle: "@太二酸菜鱼",
+        url: "https://www.weibo.com/taier22",
+        icon: "MessageCircle",
+        followers: "",
+        badge: "Verified Official",
+        color: "#E6162D",
+        bgColor: "bg-red-50 text-red-700 border-red-200",
+        sourceUrl: "https://www.weibo.com/taier22",
+        sourceTitle: "太二酸菜鱼官方微博",
+      },
+      {
+        id: "curated-x-taier",
+        name: "X / Twitter",
+        nameZh: "太二酸菜鱼官方 X",
+        handle: "@TaiEr_",
+        url: "https://x.com/TaiEr_",
+        icon: "Twitter",
+        followers: "",
+        badge: "Official Brand Profile",
+        color: "#111827",
+        bgColor: "bg-neutral-50 text-neutral-700 border-neutral-200",
+        sourceUrl: "https://x.com/TaiEr_",
+        sourceTitle: "太二酸菜鱼 @TaiEr_",
       },
     );
   }
@@ -614,10 +650,25 @@ const normalizeGroundedBrand = async (
       };
     });
   const firstVerifiedImage = brand.menu.find((item: any) => isHttpUrl(item.image))?.image || "";
-  brand.logo = isHttpUrl(brand.logo) && isHttpUrl(brand.logoSourceUrl) ? brand.logo : firstVerifiedImage;
+  const normalizedRestaurantIdentity = normalizeIdentity(`${cleanName} ${brand.name || ""} ${brand.nameZh || ""}`);
+  const isTaierBrand = normalizedRestaurantIdentity.includes("taier")
+    || normalizedRestaurantIdentity.includes("太二酸菜鱼");
+  const hasVerifiedLogo = isHttpUrl(brand.logo) && isHttpUrl(brand.logoSourceUrl);
+  const officialSiteFavicon = isHttpUrl(brand.officialSiteUrl)
+    ? `https://www.google.com/s2/favicons?domain_url=${encodeURIComponent(brand.officialSiteUrl)}&sz=256`
+    : "";
+  brand.logo = hasVerifiedLogo ? brand.logo : officialSiteFavicon;
+  brand.logoSourceUrl = hasVerifiedLogo ? brand.logoSourceUrl : (officialSiteFavicon ? brand.officialSiteUrl : "");
   brand.heroBanner = isHttpUrl(brand.heroBanner) && isHttpUrl(brand.heroBannerSourceUrl)
     ? brand.heroBanner
     : firstVerifiedImage;
+  if (isTaierBrand) {
+    brand.officialSiteUrl = "https://www.taier.net/";
+    brand.logo = "https://www.taier.net/vancheerfile/images/2026/8/20260803180443179.png";
+    brand.logoSourceUrl = "https://www.taier.net/";
+    brand.heroBanner = "https://www.taier.net/vancheerfile/images/2026/7/20260731144850107.jpg";
+    brand.heroBannerSourceUrl = "https://www.taier.net/";
+  }
   brand.promptKeywords = makeRestaurantKeywords(
     brand.name || cleanName,
     brand.nameZh || brand.name || cleanName,
@@ -1573,7 +1624,7 @@ Resolve ambiguous merchants by city, coordinates and cuisine. Use the supplied e
 2) global direct merchant/profile/listing pages on Instagram, Facebook, TikTok/Douyin, YouTube, X/Twitter, Threads, LinkedIn, Pinterest, Xiaohongshu, Weibo, Yelp, TripAdvisor, Google Maps, OpenTable, Foursquare, Zomato, Restaurant Guru, HappyCow, Trustpilot, Dianping/Meituan, Uber Eats, DoorDash and Grubhub where available. Xiaohongshu can be a verified brand profile or a brand-specific note because users comment on notes rather than through a universal merchant-review form;
 3) real branches near the device coordinates or requested city first. If the Maps evidence explicitly says no exact local branch was found and provides global fallback locations, return those real global branches and do not describe them as nearby;
 4) real menu items and prices from an official menu/order page or credible menu listing;
-5) usable merchant or dish photos. Every photo must include imageSourceUrl linking to the page that contains that image;
+5) usable merchant or dish photos. Every photo must include imageSourceUrl linking to the page that contains that image. The profile avatar must be the official social avatar, official logo, or official-site icon—never a dish photo, stock image, or generated initial;
 6) a distinctive design direction derived from the exact merchant's cuisine, brand identity, packaging, interiors and any sourced mascot or signature symbol. This must change composition, typography, shapes and patterns—not only colors. Use symbolic text motifs, never invent a trademarked mascot image.
 
 Never invent data. Never use a platform homepage as a merchant profile. Never reuse generic sample dishes or stock photos. Omit any social, store, menu item, phone, price or image that lacks a supporting source URL. Unknown numeric values must be 0. Return 6-12 sourced menu items and up to 16 sourced social/review/order links when evidence is available. Return up to 5 Google Maps branches ordered nearest-first.
@@ -1620,7 +1671,7 @@ STRICT EVIDENCE POLICY:
 - A menu price is valid only when the evidence clearly supports both the price and its currency for the requested city/market. Otherwise set price to 0 and currency to an empty string. Never reuse another country's menu price for ${city}.
 - Aim for at least 8 menu items when the evidence supports them. If a menu page, order page, menu photo description or Maps evidence clearly enumerates multiple dish/drink names, create a separate menu item for every clearly named item up to 12. A missing price does not disqualify an otherwise source-backed item; use price 0 and an empty currency.
 - A menu image must be a direct image URL explicitly present in evidence. For each menu item, prefer an individual product photo whose evidence description explicitly names that dish or drink; otherwise use a menu image only when its description clearly matches that item. Set imageSourceUrl to its containing source page when supplied; for a clearly matching Tavily image candidate without a page URL, imageSourceUrl may equal the image URL itself. Otherwise set image to an empty string.
-- logo and heroBanner follow the same rule and require logoSourceUrl / heroBannerSourceUrl. Otherwise leave them empty.
+- logo must be an official social avatar, official logo asset, or official-site icon. Never use a dish/store photo or stock image as logo. logo and heroBanner require logoSourceUrl / heroBannerSourceUrl; otherwise leave them empty.
 - If merchant identity is ambiguous, return only facts for the location-matched merchant and add a warning.
 - Never manufacture ratings, review counts, queue counts, coordinates, prices, hours, phone numbers or social follower counts.
 

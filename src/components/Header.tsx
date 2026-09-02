@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useMemo, useState, useRef, useEffect } from 'react';
 import { BrandConfig, BrandStyleProfile, Language, StoreLocation } from '../types';
 import { TRANSLATIONS, LANGUAGE_OPTIONS } from '../utils/translations';
 import { 
@@ -38,10 +38,16 @@ export const Header: React.FC<HeaderProps> = ({
   activeSection,
   onScrollToSection,
   nearestStore,
-  styleProfile,
 }) => {
   const t = TRANSLATIONS[language] || TRANSLATIONS.en;
   const isZh = language === 'zh' || language === 'zh-TW';
+  const officialAvatarUrl = useMemo(() => {
+    const logo = brand.logo?.trim() || '';
+    const isStockPlaceholder = /(?:images\.unsplash\.com|picsum\.photos|placehold\.co|placeholder\.com)/i.test(logo);
+    if (logo && !isStockPlaceholder) return logo;
+    if (!brand.officialSiteUrl) return '';
+    return `https://www.google.com/s2/favicons?domain_url=${encodeURIComponent(brand.officialSiteUrl)}&sz=256`;
+  }, [brand.logo, brand.officialSiteUrl]);
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isBrandDropdownOpen, setIsBrandDropdownOpen] = useState(false);
   const verifiedRating = brand.stores.find((store) => Number(store.rating) > 0)?.rating;
@@ -199,25 +205,21 @@ export const Header: React.FC<HeaderProps> = ({
           style={brand.heroBanner ? {
             backgroundImage: `linear-gradient(180deg, transparent 40%, ${brand.primaryColor}1A 72%, ${brand.primaryColor}66 100%), url(${brand.heroBanner})`,
           } : undefined}
-        >
-          {!brand.heroBanner && <span className="brand-mascot-main">{styleProfile.motifs[0] || '✦'}</span>}
-        </div>
+        />
         <div className="brand-hero-inner max-w-6xl mx-auto flex flex-col relative z-10">
           
           {/* Logo Avatar */}
           <div className="brand-logo-lockup relative mb-3 group">
             <div className="brand-logo-frame w-20 h-20 sm:w-24 sm:h-24 border-2 border-white/95 shadow-xl overflow-hidden bg-white flex items-center justify-center p-1">
-              {brand.logo ? (
+              {officialAvatarUrl ? (
                 <img
-                  src={brand.logo}
-                alt={isZh ? brand.nameZh : brand.name}
-                  className="w-full h-full object-cover rounded-full"
+                  src={officialAvatarUrl}
+                  alt={isZh ? `${brand.nameZh} official logo` : `${brand.name} official logo`}
+                  className="w-full h-full object-contain rounded-full"
                   referrerPolicy="no-referrer"
                 />
               ) : (
-                <span className="text-xl font-black" style={{ color: brand.primaryColor }}>
-                  {(isZh ? brand.nameZh : brand.name).trim().slice(0, 1).toUpperCase()}
-                </span>
+                <Store className="w-9 h-9" aria-label={isZh ? '官方商家图标' : 'Official merchant icon'} style={{ color: brand.primaryColor }} />
               )}
             </div>
             {brand.verifiedBadge && (

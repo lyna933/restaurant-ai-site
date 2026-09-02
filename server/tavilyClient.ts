@@ -183,7 +183,7 @@ export async function researchRestaurantWithTavily(input: {
 }) {
   const location = input.city || "local area";
   const queries = [
-    `"${input.name}" official name Chinese name English name alias global official website contact phone worldwide locations official logo brand colors mascot visual identity`,
+    `"${input.name}" official name Chinese name English name alias global official website contact phone worldwide locations official social profile avatar logo image brand colors mascot visual identity`,
     `"${input.name}" ${location} global official menu full menu signature dishes individual product photos prices image gallery ${input.cuisineType || "restaurant"}`,
     `"${input.name}" official Instagram profile account`,
     `"${input.name}" official Facebook page profile account`,

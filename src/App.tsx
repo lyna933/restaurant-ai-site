@@ -521,12 +521,6 @@ export default function App() {
       data-pattern={brandStyle.patternStyle}
       style={brandThemeStyle(displayBrand, brandStyle)}
     >
-      <div className="brand-atmosphere" aria-hidden="true">
-        {Array.from({ length: 14 }, (_, index) => (
-          <span key={index}>{brandStyle.motifs[index % brandStyle.motifs.length]}</span>
-        ))}
-      </div>
-      
       {/* Header with Multi-Tenant Switcher, Brand Hero and Navigation */}
       <Header
         brand={displayBrand}
