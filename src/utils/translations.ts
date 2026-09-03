@@ -57,19 +57,19 @@ export interface TranslationDict {
 export const TRANSLATIONS: Record<Language, TranslationDict> = {
   en: {
     navSocials: 'Socials',
-    navReviews: 'Rate & Reviews',
-    navOrder: 'Menu & Stores',
+    navReviews: 'Review & Rate',
+    navOrder: 'Store & Menu',
     navContact: 'Contact',
     customRestaurant: 'Custom Restaurant',
     fromLocation: 'from your location',
     itemCountLabel: 'Items',
     
-    socialsTitle: 'Social Media Matrix',
+    socialsTitle: 'Social Media',
     visitProfile: 'Visit Profile',
     copyHandle: 'Copy Handle',
     copied: 'Copied',
     
-    reviewsTitle: 'Customer Reviews & Rating',
+    reviewsTitle: 'Review & Rate',
     aiPolishTitle: 'AI Review Polish',
     chooseApp: 'Select Platform',
     keywordPrompts: 'Tap Keywords to Add Prompt',
@@ -81,7 +81,7 @@ export const TRANSLATIONS: Record<Language, TranslationDict> = {
     like: 'Like',
     verifiedCustomer: 'Verified Customer',
     
-    orderTitle: 'Official Menu & Stores',
+    orderTitle: 'Store & Menu',
     pickup: 'Pickup',
     delivery: 'Delivery',
     openStatus: 'Open Now',
@@ -118,12 +118,12 @@ export const TRANSLATIONS: Record<Language, TranslationDict> = {
     fromLocation: '离当前定位',
     itemCountLabel: '项',
     
-    socialsTitle: '官方社交媒体矩阵',
+    socialsTitle: '社交媒体',
     visitProfile: '访问主页',
     copyHandle: '复制账号',
     copied: '已复制',
     
-    reviewsTitle: '用户评价与AI点评',
+    reviewsTitle: '评价与打分',
     aiPolishTitle: 'AI 智能润色好评',
     chooseApp: '选择直达平台',
     keywordPrompts: '点击提示词一键填入',
@@ -135,7 +135,7 @@ export const TRANSLATIONS: Record<Language, TranslationDict> = {
     like: '赞同',
     verifiedCustomer: '已验证顾客',
     
-    orderTitle: '官方精选菜单与门店',
+    orderTitle: '门店与菜单',
     pickup: '到店自提',
     delivery: '外卖配送',
     openStatus: '营业中',
@@ -172,12 +172,12 @@ export const TRANSLATIONS: Record<Language, TranslationDict> = {
     fromLocation: '距離目前位置',
     itemCountLabel: '項',
     
-    socialsTitle: '官方社群媒體矩陣',
+    socialsTitle: '社群媒體',
     visitProfile: '前往首頁',
     copyHandle: '複製帳號',
     copied: '已複製',
     
-    reviewsTitle: '顧客評價與AI點評',
+    reviewsTitle: '評價與評分',
     aiPolishTitle: 'AI 智慧潤色好評',
     chooseApp: '選擇直達平台',
     keywordPrompts: '點擊提示詞一鍵填入',
@@ -189,7 +189,7 @@ export const TRANSLATIONS: Record<Language, TranslationDict> = {
     like: '讚同',
     verifiedCustomer: '已驗證顧客',
     
-    orderTitle: '隨行卡行動點餐',
+    orderTitle: '門市與菜單',
     pickup: '到店自取',
     delivery: '外送服務',
     openStatus: '營業中',
@@ -226,12 +226,12 @@ export const TRANSLATIONS: Record<Language, TranslationDict> = {
     fromLocation: '現在地から',
     itemCountLabel: '品',
     
-    socialsTitle: '公式SNSアカウント',
+    socialsTitle: 'ソーシャルメディア',
     visitProfile: 'ページを開く',
     copyHandle: 'コピー',
     copied: 'コピー完了',
     
-    reviewsTitle: 'カスタマーレビュー',
+    reviewsTitle: 'レビュー＆評価',
     aiPolishTitle: 'AIレビュー作成',
     chooseApp: '投稿先アプリを選択',
     keywordPrompts: 'キーワードをタップして挿入',
@@ -243,7 +243,7 @@ export const TRANSLATIONS: Record<Language, TranslationDict> = {
     like: 'いいね',
     verifiedCustomer: '認証済みのお客様',
     
-    orderTitle: 'モバイルオーダー＆メニュー',
+    orderTitle: '店舗＆メニュー',
     pickup: '店舗受取',
     delivery: 'デリバリー',
     openStatus: '営業中',
@@ -280,12 +280,12 @@ export const TRANSLATIONS: Record<Language, TranslationDict> = {
     fromLocation: '현재 위치에서',
     itemCountLabel: '개',
     
-    socialsTitle: '공식 소셜 미디어',
+    socialsTitle: '소셜 미디어',
     visitProfile: '프로필 방문',
     copyHandle: '아이디 복사',
     copied: '복사 완료',
     
-    reviewsTitle: '고객 리뷰 및 AI 별점',
+    reviewsTitle: '리뷰 및 평가',
     aiPolishTitle: 'AI 스마트 리뷰 다듬기',
     chooseApp: '플랫폼 선택',
     keywordPrompts: '키워드를 터치하여 입력',
@@ -297,7 +297,7 @@ export const TRANSLATIONS: Record<Language, TranslationDict> = {
     like: '좋아요',
     verifiedCustomer: '인증된 고객',
     
-    orderTitle: '사이렌 오더 & 메뉴',
+    orderTitle: '매장 및 메뉴',
     pickup: '매장 픽업',
     delivery: '딜리버스',
     openStatus: '영업 중',
@@ -334,12 +334,12 @@ export const TRANSLATIONS: Record<Language, TranslationDict> = {
     fromLocation: 'desde tu ubicación',
     itemCountLabel: 'artículos',
     
-    socialsTitle: 'Redes Sociales Oficiales',
+    socialsTitle: 'Redes sociales',
     visitProfile: 'Ver Perfil',
     copyHandle: 'Copiar',
     copied: 'Copiado',
     
-    reviewsTitle: 'Reseñas de Clientes',
+    reviewsTitle: 'Reseñas y valoración',
     aiPolishTitle: 'Mejorar con IA',
     chooseApp: 'Seleccionar Plataforma',
     keywordPrompts: 'Toca palabras clave para añadir',
@@ -351,7 +351,7 @@ export const TRANSLATIONS: Record<Language, TranslationDict> = {
     like: 'Me gusta',
     verifiedCustomer: 'Cliente Verificado',
     
-    orderTitle: 'Menú y Pedidos Móviles',
+    orderTitle: 'Locales y menú',
     pickup: 'Recoger en Tienda',
     delivery: 'A Domicilio',
     openStatus: 'Abierto',
@@ -388,12 +388,12 @@ export const TRANSLATIONS: Record<Language, TranslationDict> = {
     fromLocation: 'depuis votre position',
     itemCountLabel: 'articles',
     
-    socialsTitle: 'Réseaux Sociaux Officiels',
+    socialsTitle: 'Réseaux sociaux',
     visitProfile: 'Voir le Profil',
     copyHandle: 'Copier',
     copied: 'Copié',
     
-    reviewsTitle: 'Avis Clients & Notation',
+    reviewsTitle: 'Avis et notation',
     aiPolishTitle: 'Optimiser avec l’IA',
     chooseApp: 'Choisir la Plateforme',
     keywordPrompts: 'Appuyez pour insérer des mots-clés',
@@ -405,7 +405,7 @@ export const TRANSLATIONS: Record<Language, TranslationDict> = {
     like: 'Utile',
     verifiedCustomer: 'Client Vérifié',
     
-    orderTitle: 'Menu & Commande Mobile',
+    orderTitle: 'Adresses et menu',
     pickup: 'À Emporter',
     delivery: 'Livraison',
     openStatus: 'Ouvert',
@@ -442,12 +442,12 @@ export const TRANSLATIONS: Record<Language, TranslationDict> = {
     fromLocation: 'von Ihrem Standort',
     itemCountLabel: 'Artikel',
     
-    socialsTitle: 'Soziale Medien',
+    socialsTitle: 'Social Media',
     visitProfile: 'Profil öffnen',
     copyHandle: 'Kopieren',
     copied: 'Kopiert',
     
-    reviewsTitle: 'Kundenbewertungen',
+    reviewsTitle: 'Bewerten & Rezension',
     aiPolishTitle: 'Mit KI verfeinern',
     chooseApp: 'Plattform wählen',
     keywordPrompts: 'Schlagwörter antippen zum Einfügen',
@@ -459,7 +459,7 @@ export const TRANSLATIONS: Record<Language, TranslationDict> = {
     like: 'Gefällt mir',
     verifiedCustomer: 'Verifizierter Kunde',
     
-    orderTitle: 'Speisekarte & Bestellung',
+    orderTitle: 'Filialen & Menü',
     pickup: 'Abholung',
     delivery: 'Lieferung',
     openStatus: 'Geöffnet',

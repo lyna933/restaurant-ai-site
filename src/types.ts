@@ -88,6 +88,19 @@ export interface CustomerReview {
   verified: boolean;
 }
 
+export type BrandVisualStyle = 'playful' | 'minimal' | 'heritage' | 'street' | 'editorial';
+export type BrandLayoutMode = 'bento' | 'showcase' | 'story' | 'gallery';
+
+export interface BrandStyleProfile {
+  visualStyle: BrandVisualStyle;
+  layoutMode: BrandLayoutMode;
+  displayFont: 'rounded' | 'modern' | 'serif' | 'condensed';
+  cardShape: 'soft' | 'pill' | 'sharp' | 'organic';
+  motifs: string[];
+  patternStyle: 'confetti' | 'stamp' | 'waves' | 'grid' | 'minimal';
+  atmosphere?: string;
+}
+
 export interface BrandConfig {
   id: string;
   name: string;
@@ -95,11 +108,14 @@ export interface BrandConfig {
   tagline: string;
   taglineZh: string;
   logo: string;
+  logoSourceUrl?: string;
   heroBanner: string;
+  heroBannerSourceUrl?: string;
   primaryColor: string;
   accentColor: string;
   bgColor: string;
   cardBg: string;
+  styleProfile?: BrandStyleProfile;
   verifiedBadge: boolean;
   officialSiteUrl: string;
   hotline: string;

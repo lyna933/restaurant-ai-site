@@ -46,7 +46,7 @@ export const ContactHotlineSection: React.FC<ContactHotlineSectionProps> = ({
   return (
     <section id="section-contact" className="scroll-mt-16 space-y-4">
       {/* Section Header */}
-      <div className="flex items-center justify-between mb-1">
+      <div className="brand-section-heading flex items-center justify-between mb-1">
         <div className="flex items-center gap-2.5">
           <span className="w-8 h-8 rounded-xl bg-[#006241] text-white flex items-center justify-center font-bold text-sm shadow-xs">
             04
