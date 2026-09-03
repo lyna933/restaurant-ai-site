@@ -144,7 +144,7 @@ export const SocialsSection: React.FC<SocialsSectionProps> = ({
   return (
     <section id="section-socials" className="scroll-mt-16">
       {/* Section Header */}
-      <div className="brand-section-heading flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2.5">
           <span className="w-8 h-8 rounded-xl bg-[#006241] text-white flex items-center justify-center font-bold text-sm shadow-xs">
             01
@@ -174,7 +174,7 @@ export const SocialsSection: React.FC<SocialsSectionProps> = ({
             key={social.id}
             id={`social-card-${social.id}`}
             onClick={() => handleOpenLink(directProfileUrl(social.url), isZh ? social.nameZh : social.name)}
-            className="social-link-card group relative bg-white rounded-2xl p-3.5 border border-neutral-200 shadow-xs hover:border-emerald-500/60 transition-all flex flex-col justify-between cursor-pointer hover:bg-emerald-50/20"
+            className="group relative bg-white rounded-2xl p-3.5 border border-neutral-200 shadow-xs hover:border-emerald-500/60 transition-all flex flex-col justify-between cursor-pointer hover:bg-emerald-50/20"
           >
             <div>
               <div className="flex items-start justify-between gap-2">

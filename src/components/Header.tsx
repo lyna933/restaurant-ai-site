@@ -1,5 +1,5 @@
-import React, { useMemo, useState, useRef, useEffect } from 'react';
-import { BrandConfig, BrandStyleProfile, Language, StoreLocation } from '../types';
+import React, { useState, useRef, useEffect } from 'react';
+import { BrandConfig, Language, StoreLocation } from '../types';
 import { TRANSLATIONS, LANGUAGE_OPTIONS } from '../utils/translations';
 import { 
   CheckCircle2, 
@@ -24,7 +24,6 @@ interface HeaderProps {
   activeSection: string;
   onScrollToSection: (sectionId: string) => void;
   nearestStore?: StoreLocation;
-  styleProfile: BrandStyleProfile;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -37,25 +36,13 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenShare,
   activeSection,
   onScrollToSection,
-  nearestStore,
+  nearestStore
 }) => {
   const t = TRANSLATIONS[language] || TRANSLATIONS.en;
   const isZh = language === 'zh' || language === 'zh-TW';
-  const officialAvatarUrl = useMemo(() => {
-    const logo = brand.logo?.trim() || '';
-    const isStockPlaceholder = /(?:images\.unsplash\.com|picsum\.photos|placehold\.co|placeholder\.com)/i.test(logo);
-    if (logo && !isStockPlaceholder) return logo;
-    if (!brand.officialSiteUrl) return '';
-    return `https://www.google.com/s2/favicons?domain_url=${encodeURIComponent(brand.officialSiteUrl)}&sz=256`;
-  }, [brand.logo, brand.officialSiteUrl]);
-  const [avatarLoadFailed, setAvatarLoadFailed] = useState(false);
-  const [heroLoadFailed, setHeroLoadFailed] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isBrandDropdownOpen, setIsBrandDropdownOpen] = useState(false);
   const verifiedRating = brand.stores.find((store) => Number(store.rating) > 0)?.rating;
-
-  useEffect(() => setAvatarLoadFailed(false), [officialAvatarUrl]);
-  useEffect(() => setHeroLoadFailed(false), [brand.heroBanner]);
   const langRef = useRef<HTMLDivElement>(null);
   const brandRef = useRef<HTMLDivElement>(null);
 
@@ -78,7 +65,7 @@ export const Header: React.FC<HeaderProps> = ({
     <header id="brand-header" className="w-full relative z-20">
       
       {/* Top Banner with Multi-Brand Switcher / Language Dropdown / AI Workflow trigger */}
-      <div className="brand-toolbar bg-neutral-950 text-neutral-200 text-xs py-1.5 px-4 shadow-xs border-b border-neutral-800">
+      <div className="bg-neutral-950 text-neutral-200 text-xs py-1.5 px-4 shadow-xs border-b border-neutral-800">
         <div className="max-w-4xl mx-auto flex items-center justify-between gap-2">
           
           {/* Brand Switcher & AI Generator Trigger */}
@@ -201,39 +188,28 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Main Profile Hero Card with Dynamic Brand Gradient */}
       <div 
-        className="brand-hero relative text-white px-4 shadow-md transition-all duration-500 overflow-hidden"
-        style={{ backgroundColor: 'transparent' }}
+        className="relative text-white pt-5 pb-5 px-4 shadow-md transition-colors duration-500"
+        style={{
+          background: `linear-gradient(180deg, ${brand.primaryColor} 0%, #171717 100%)`
+        }}
       >
-        <div
-          className="brand-mascot-board"
-          aria-hidden="true"
-        >
-          {brand.heroBanner && !heroLoadFailed && (
-            <img
-              src={brand.heroBanner}
-              alt=""
-              className="brand-hero-image"
-              referrerPolicy="no-referrer"
-              onError={() => setHeroLoadFailed(true)}
-            />
-          )}
-          <span className="brand-hero-image-shade" style={{ background: `linear-gradient(180deg, transparent 40%, ${brand.primaryColor}1A 72%, ${brand.primaryColor}66 100%)` }} />
-        </div>
-        <div className="brand-hero-inner max-w-6xl mx-auto flex flex-col relative z-10">
+        
+        <div className="max-w-4xl mx-auto flex flex-col items-center text-center relative z-10">
           
           {/* Logo Avatar */}
-          <div className="brand-logo-lockup relative mb-3 group">
-            <div className="brand-logo-frame w-20 h-20 sm:w-24 sm:h-24 border-2 border-white/95 shadow-xl overflow-hidden bg-white flex items-center justify-center p-1">
-              {officialAvatarUrl && !avatarLoadFailed ? (
+          <div className="relative mb-2 group">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-white/95 shadow-xl overflow-hidden bg-white flex items-center justify-center p-1">
+              {brand.logo ? (
                 <img
-                  src={officialAvatarUrl}
-                  alt={isZh ? `${brand.nameZh} official logo` : `${brand.name} official logo`}
-                  className={`brand-avatar-image brand-avatar-image-${brand.id} w-full h-full object-contain rounded-full`}
+                  src={brand.logo}
+                alt={isZh ? brand.nameZh : brand.name}
+                  className="w-full h-full object-cover rounded-full"
                   referrerPolicy="no-referrer"
-                  onError={() => setAvatarLoadFailed(true)}
                 />
               ) : (
-                <Store className="w-9 h-9" aria-label={isZh ? '官方商家图标' : 'Official merchant icon'} style={{ color: brand.primaryColor }} />
+                <span className="text-xl font-black" style={{ color: brand.primaryColor }}>
+                  {(isZh ? brand.nameZh : brand.name).trim().slice(0, 1).toUpperCase()}
+                </span>
               )}
             </div>
             {brand.verifiedBadge && (
@@ -248,17 +224,17 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Brand Name & Tagline */}
-          <div className="brand-title-lockup flex flex-col gap-1 justify-center max-w-2xl">
-            <h1 className="brand-display-title text-3xl sm:text-5xl font-black tracking-tight text-white">
+          <div className="flex flex-col items-center gap-1 justify-center max-w-lg">
+            <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white font-sans">
               {isZh ? brand.nameZh : brand.name}
             </h1>
-            <p className="brand-tagline text-sm sm:text-base text-white/85 line-clamp-2">
+            <p className="text-xs text-white/80 line-clamp-2 px-2">
               {isZh ? brand.taglineZh : brand.tagline}
             </p>
           </div>
 
           {/* Quick Metrics Bar */}
-          <div className="brand-metrics mt-4 flex items-center gap-3 sm:gap-4 text-xs text-white/90 bg-black/35 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/10">
+          <div className="mt-2.5 flex items-center justify-center gap-3 sm:gap-4 text-xs text-white/90 bg-black/35 backdrop-blur-xs px-3 py-1 rounded-xl border border-white/10">
             <div className="flex items-center gap-1">
               <Star className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
               <span className="font-bold text-white">{verifiedRating || '--'}</span>
@@ -275,7 +251,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {nearestStore && (
-            <div className="brand-nearest-store mt-2 flex max-w-2xl items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-black/25 px-3 py-1 text-[11px] text-white/85">
+            <div className="mt-2 flex max-w-2xl items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-black/25 px-3 py-1 text-[11px] text-white/85">
               <span className="font-bold text-amber-300">{/(?:km|mi)$/i.test(nearestStore.distance || '') ? nearestStore.distance : '-- km'}</span>
               <span>{nearestStore.locationScope === 'global'
                 ? (isZh ? '全球已核验门店' : 'verified global location')
@@ -286,7 +262,7 @@ export const Header: React.FC<HeaderProps> = ({
           )}
 
           {/* Navigation Anchors: 1. Socials, 2. Reviews, 3. Order, 4. Contact */}
-          <nav aria-label={isZh ? '页面导航' : 'Sections'} className="brand-section-nav mt-4 w-full flex items-center justify-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+          <nav aria-label={isZh ? '页面导航' : 'Sections'} className="mt-4 w-full flex items-center justify-center gap-2 overflow-x-auto pb-1 no-scrollbar">
             
             <button
               id="nav-socials"

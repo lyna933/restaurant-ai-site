@@ -37,16 +37,16 @@ export const RateUsSection: React.FC<RateUsSectionProps> = ({
 }) => {
   const t = TRANSLATIONS[language] || TRANSLATIONS.en;
   const isZh = language === 'zh' || language === 'zh-TW';
-  const brandName = brand ? (isZh ? brand.nameZh : brand.name) : 'this restaurant';
+  const brandName = brand ? (isZh ? brand.nameZh : brand.name) : 'Starbucks';
   const ui = ({
-    en: { direct: 'Direct review form for this store', store: 'Exact store page — tap Write a review', exact: 'Exact merchant page', booking: 'Review after verified booking', venue: 'Exact venue tips & feedback', restaurant: 'Exact restaurant listing', community: 'Community review listing', public: 'Public business review', post: 'Open the merchant post and comment', profile: 'Open merchant profile, then choose a post to comment', order: 'Rate after a completed order', style: 'Select Style Preference', draft: 'Selected Keywords & Notes', result: 'Polished Review Result' },
-    zh: { direct: '直接打开当前门店写评价页面', store: '当前门店主页，点击“撰写评价”', exact: '当前商家页面', booking: '完成订座后可评价', venue: '商家地点与评价', restaurant: '当前餐厅评价页', community: '社区评价页', public: '公开商家评价页', post: '直接打开商家笔记并评论', profile: '进入商家主页，选择笔记后评论', order: '完成订单后可评分', style: '选择语言风格偏好', draft: '已选关键词 / 输入要点', result: 'AI 润色生成结果' },
-    'zh-TW': { direct: '直接開啟目前門市評價頁面', store: '目前門市首頁，點選「撰寫評論」', exact: '目前商家頁面', booking: '完成訂位後可評論', venue: '商家地點與評論', restaurant: '目前餐廳評論頁', community: '社群評論頁', public: '公開商家評論頁', post: '直接開啟商家貼文並留言', profile: '進入商家首頁，選擇貼文後留言', order: '完成訂單後可評分', style: '選擇文字風格', draft: '已選關鍵字／輸入重點', result: 'AI 潤飾結果' },
-    ja: { direct: 'この店舗のレビュー投稿画面を直接開く', store: '店舗ページを開き「クチコミを書く」を選択', exact: 'この店舗のページ', booking: '予約完了後にレビュー可能', venue: '店舗情報・レビュー', restaurant: 'レストランのレビューページ', community: 'コミュニティレビュー', public: '公開ビジネスレビュー', post: '店舗投稿を開いてコメント', profile: '店舗プロフィールから投稿を選んでコメント', order: '注文完了後に評価可能', style: '文章スタイルを選択', draft: 'キーワード・メモ', result: 'AI推敲結果' },
-    ko: { direct: '현재 매장 리뷰 작성 화면 바로 열기', store: '매장 페이지에서 리뷰 작성을 선택하세요', exact: '현재 매장 페이지', booking: '예약 완료 후 리뷰 가능', venue: '매장 정보 및 리뷰', restaurant: '현재 음식점 리뷰 페이지', community: '커뮤니티 리뷰', public: '공개 비즈니스 리뷰', post: '매장 게시물을 열어 댓글 작성', profile: '매장 프로필에서 게시물을 선택해 댓글 작성', order: '주문 완료 후 평가 가능', style: '문체 선택', draft: '선택한 키워드 및 메모', result: 'AI 다듬기 결과' },
-    es: { direct: 'Abrir directamente el formulario de reseña', store: 'Página exacta del local: pulsa Escribir reseña', exact: 'Página exacta del comercio', booking: 'Reseña disponible tras reservar', venue: 'Lugar y opiniones verificadas', restaurant: 'Ficha exacta del restaurante', community: 'Reseñas de la comunidad', public: 'Reseña pública del negocio', post: 'Abrir la publicación y comentar', profile: 'Abrir el perfil y elegir una publicación para comentar', order: 'Valorar después de completar un pedido', style: 'Seleccionar estilo', draft: 'Palabras clave y notas', result: 'Resultado mejorado' },
-    fr: { direct: 'Ouvrir directement le formulaire d’avis', store: 'Page exacte du restaurant — cliquez sur Rédiger un avis', exact: 'Page exacte du commerce', booking: 'Avis possible après réservation', venue: 'Lieu et avis vérifiés', restaurant: 'Fiche exacte du restaurant', community: 'Avis de la communauté', public: 'Avis public sur l’établissement', post: 'Ouvrir la publication et commenter', profile: 'Ouvrir le profil puis choisir une publication', order: 'Noter après une commande terminée', style: 'Choisir le style', draft: 'Mots-clés et notes', result: 'Résultat optimisé' },
-    de: { direct: 'Bewertungsformular für diese Filiale direkt öffnen', store: 'Exakte Filialseite — „Rezension schreiben“ wählen', exact: 'Exakte Unternehmensseite', booking: 'Bewertung nach bestätigter Reservierung', venue: 'Standort und verifizierte Hinweise', restaurant: 'Exakter Restauranteintrag', community: 'Community-Bewertungen', public: 'Öffentliche Unternehmensbewertung', post: 'Unternehmensbeitrag öffnen und kommentieren', profile: 'Unternehmensprofil öffnen und Beitrag auswählen', order: 'Nach abgeschlossener Bestellung bewerten', style: 'Schreibstil auswählen', draft: 'Schlagwörter und Notizen', result: 'KI-optimiertes Ergebnis' },
+    en: { direct: 'Direct review form for this store', store: 'Exact store page — tap Write a review', exact: 'Exact merchant page', booking: 'Review after verified booking', venue: 'Exact venue tips & feedback', restaurant: 'Exact restaurant listing', community: 'Community review listing', public: 'Public business review', post: 'Open the merchant post and comment', profile: 'Open merchant profile, then choose a post to comment', order: 'Rate after a completed order', style: 'Select Style Preference', draft: 'Selected Keywords & Notes (Draft)', result: 'Polished Review Result' },
+    zh: { direct: '直接打开当前门店写评价页面', store: '当前门店主页，点击“撰写评价”', exact: '当前商家页面', booking: '完成订座后可评价', venue: '商家地点与评价', restaurant: '当前餐厅评价页', community: '社区评价页', public: '公开商家评价页', post: '直接打开商家笔记并评论', profile: '进入商家主页，选择笔记后评论', order: '完成订单后可评分', style: '选择语言风格偏好', draft: '已选关键词 / 输入要点（未润色）', result: 'AI 润色生成结果' },
+    'zh-TW': { direct: '直接開啟目前門市評價頁面', store: '目前門市首頁，點選「撰寫評論」', exact: '目前商家頁面', booking: '完成訂位後可評論', venue: '商家地點與評論', restaurant: '目前餐廳評論頁', community: '社群評論頁', public: '公開商家評論頁', post: '直接開啟商家貼文並留言', profile: '進入商家首頁，選擇貼文後留言', order: '完成訂單後可評分', style: '選擇文字風格', draft: '已選關鍵字／輸入重點（草稿）', result: 'AI 潤飾結果' },
+    ja: { direct: 'この店舗のレビュー投稿画面を直接開く', store: '店舗ページを開き「クチコミを書く」を選択', exact: 'この店舗のページ', booking: '予約完了後にレビュー可能', venue: '店舗情報・レビュー', restaurant: 'レストランのレビューページ', community: 'コミュニティレビュー', public: '公開ビジネスレビュー', post: '店舗投稿を開いてコメント', profile: '店舗プロフィールから投稿を選んでコメント', order: '注文完了後に評価可能', style: '文章スタイルを選択', draft: 'キーワード・メモ（下書き）', result: 'AI推敲結果' },
+    ko: { direct: '현재 매장 리뷰 작성 화면 바로 열기', store: '매장 페이지에서 리뷰 작성을 선택하세요', exact: '현재 매장 페이지', booking: '예약 완료 후 리뷰 가능', venue: '매장 정보 및 리뷰', restaurant: '현재 음식점 리뷰 페이지', community: '커뮤니티 리뷰', public: '공개 비즈니스 리뷰', post: '매장 게시물을 열어 댓글 작성', profile: '매장 프로필에서 게시물을 선택해 댓글 작성', order: '주문 완료 후 평가 가능', style: '문체 선택', draft: '선택한 키워드 및 메모(초안)', result: 'AI 다듬기 결과' },
+    es: { direct: 'Abrir directamente el formulario de reseña', store: 'Página exacta del local: pulsa Escribir reseña', exact: 'Página exacta del comercio', booking: 'Reseña disponible tras reservar', venue: 'Lugar y opiniones verificadas', restaurant: 'Ficha exacta del restaurante', community: 'Reseñas de la comunidad', public: 'Reseña pública del negocio', post: 'Abrir la publicación y comentar', profile: 'Abrir el perfil y elegir una publicación para comentar', order: 'Valorar después de completar un pedido', style: 'Seleccionar estilo', draft: 'Palabras clave y notas (borrador)', result: 'Resultado mejorado' },
+    fr: { direct: 'Ouvrir directement le formulaire d’avis', store: 'Page exacte du restaurant — cliquez sur Rédiger un avis', exact: 'Page exacte du commerce', booking: 'Avis possible après réservation', venue: 'Lieu et avis vérifiés', restaurant: 'Fiche exacte du restaurant', community: 'Avis de la communauté', public: 'Avis public sur l’établissement', post: 'Ouvrir la publication et commenter', profile: 'Ouvrir le profil puis choisir une publication', order: 'Noter après une commande terminée', style: 'Choisir le style', draft: 'Mots-clés et notes (brouillon)', result: 'Résultat optimisé' },
+    de: { direct: 'Bewertungsformular für diese Filiale direkt öffnen', store: 'Exakte Filialseite — „Rezension schreiben“ wählen', exact: 'Exakte Unternehmensseite', booking: 'Bewertung nach bestätigter Reservierung', venue: 'Standort und verifizierte Hinweise', restaurant: 'Exakter Restauranteintrag', community: 'Community-Bewertungen', public: 'Öffentliche Unternehmensbewertung', post: 'Unternehmensbeitrag öffnen und kommentieren', profile: 'Unternehmensprofil öffnen und Beitrag auswählen', order: 'Nach abgeschlossener Bestellung bewerten', style: 'Schreibstil auswählen', draft: 'Schlagwörter und Notizen (Entwurf)', result: 'KI-optimiertes Ergebnis' },
   } as Record<Language, Record<string, string>>)[language];
 
   const exactStore = stores[0];
@@ -380,7 +380,7 @@ export const RateUsSection: React.FC<RateUsSectionProps> = ({
   return (
     <section id="section-reviews" className="scroll-mt-16 space-y-4">
       {/* Section Header */}
-      <div className="brand-section-heading flex items-center justify-between mb-1">
+      <div className="flex items-center justify-between mb-1">
         <div className="flex items-center gap-2.5">
           <span 
             className="w-8 h-8 rounded-xl text-white flex items-center justify-center font-bold text-sm shadow-xs"
@@ -390,14 +390,14 @@ export const RateUsSection: React.FC<RateUsSectionProps> = ({
           </span>
           <div>
             <h2 className="text-xl font-black text-neutral-900 tracking-tight">
-              {t.reviewsTitle}
+              {isZh ? `${brandName} · ${t.reviewsTitle}` : `${brandName} • ${t.reviewsTitle}`}
             </h2>
           </div>
         </div>
       </div>
 
       {/* --- DIRECT RATING & AI POLISH CARD --- */}
-      <div className="review-composer bg-white rounded-2xl p-4 sm:p-5 border border-neutral-200 shadow-xs space-y-4">
+      <div className="bg-white rounded-2xl p-4 sm:p-5 border border-neutral-200 shadow-xs space-y-4">
         
         {/* Step 1: Select Platform */}
         <div>
@@ -408,7 +408,7 @@ export const RateUsSection: React.FC<RateUsSectionProps> = ({
             </span>
           </div>
 
-          <div className="review-platform-grid grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {reviewApps.map((app) => {
               const isSelected = selectedApp === app.id;
               return (
@@ -416,7 +416,7 @@ export const RateUsSection: React.FC<RateUsSectionProps> = ({
                   key={app.id}
                   type="button"
                   onClick={() => setSelectedApp(app.id)}
-                  className={`review-platform-card p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                  className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
                     isSelected
                       ? 'border-neutral-900 bg-neutral-50 ring-2 ring-neutral-900 shadow-xs'
                       : 'border-neutral-200 hover:border-neutral-300 bg-white'

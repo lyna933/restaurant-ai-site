@@ -162,9 +162,6 @@ const getCuratedVerifiedSocials = (cleanName: string, brand: any) => {
   const isHeytea = identities.some((identity) =>
     identity.includes("heytea") || identity.includes("喜茶"),
   );
-  const isTaier = identities.some((identity) =>
-    identity.includes("taier") || identity.includes("太二酸菜鱼") || identity === "太二",
-  );
   const profiles: any[] = [];
 
   if (isHeytea) {
@@ -243,39 +240,6 @@ const getCuratedVerifiedSocials = (cleanName: string, brand: any) => {
         bgColor: "bg-rose-50 text-rose-700 border-rose-200",
         sourceUrl: "https://www.xiaohongshu.com/user/profile/607fc46e000000000101f156",
         sourceTitle: "海底捞火锅—美国 · 小红书号 27769365676",
-      },
-    );
-  }
-
-  if (isTaier) {
-    profiles.push(
-      {
-        id: "curated-weibo-taier",
-        name: "Weibo",
-        nameZh: "太二酸菜鱼官方微博",
-        handle: "@太二酸菜鱼",
-        url: "https://www.weibo.com/taier22",
-        icon: "MessageCircle",
-        followers: "",
-        badge: "Verified Official",
-        color: "#E6162D",
-        bgColor: "bg-red-50 text-red-700 border-red-200",
-        sourceUrl: "https://www.weibo.com/taier22",
-        sourceTitle: "太二酸菜鱼官方微博",
-      },
-      {
-        id: "curated-x-taier",
-        name: "X / Twitter",
-        nameZh: "太二酸菜鱼官方 X",
-        handle: "@TaiEr_",
-        url: "https://x.com/TaiEr_",
-        icon: "Twitter",
-        followers: "",
-        badge: "Official Brand Profile",
-        color: "#111827",
-        bgColor: "bg-neutral-50 text-neutral-700 border-neutral-200",
-        sourceUrl: "https://x.com/TaiEr_",
-        sourceTitle: "太二酸菜鱼 @TaiEr_",
       },
     );
   }
@@ -431,47 +395,6 @@ const generatedBrandMatchesInput = (brand: any, cleanName: string) => {
   );
 };
 
-const normalizeStyleProfile = (brand: any) => {
-  const allowed = {
-    visualStyle: new Set(["playful", "minimal", "heritage", "street", "editorial"]),
-    layoutMode: new Set(["bento", "showcase", "story", "gallery"]),
-    displayFont: new Set(["rounded", "modern", "serif", "condensed"]),
-    cardShape: new Set(["soft", "pill", "sharp", "organic"]),
-    patternStyle: new Set(["confetti", "stamp", "waves", "grid", "minimal"]),
-  };
-  const supplied = brand?.styleProfile || {};
-  const identity = `${brand?.name || ""} ${brand?.nameZh || ""} ${brand?.cuisineType || ""} ${brand?.cuisineTypeZh || ""}`.toLowerCase();
-  const fallbackStyle = /mixue|蜜雪|ice cream|dessert|甜品|milk tea|奶茶|boba/.test(identity)
-    ? "playful"
-    : /burger|汉堡|fried chicken|炸鸡|pizza/.test(identity)
-      ? "street"
-      : /hot\s?pot|火锅|sichuan|川味|hunan|湘菜|bbq|烧烤/.test(identity)
-        ? "heritage"
-        : /coffee|cafe|咖啡|tea|茶|bakery/.test(identity)
-          ? "minimal"
-          : "editorial";
-  const defaults: Record<string, any> = {
-    playful: { layoutMode: "bento", displayFont: "rounded", cardShape: "organic", patternStyle: "confetti", motifs: ["✦", "♡", "●", "✺"] },
-    minimal: { layoutMode: "gallery", displayFont: "modern", cardShape: "soft", patternStyle: "minimal", motifs: ["—", "○", "·", "◇"] },
-    heritage: { layoutMode: "story", displayFont: "serif", cardShape: "soft", patternStyle: "stamp", motifs: ["◆", "☰", "✦", "◉"] },
-    street: { layoutMode: "showcase", displayFont: "condensed", cardShape: "sharp", patternStyle: "grid", motifs: ["★", "⚡", "＋", "●"] },
-    editorial: { layoutMode: "showcase", displayFont: "serif", cardShape: "sharp", patternStyle: "waves", motifs: ["✦", "◇", "—", "○"] },
-  };
-  const visualStyle = allowed.visualStyle.has(supplied.visualStyle) ? supplied.visualStyle : fallbackStyle;
-  const base = defaults[visualStyle];
-  brand.styleProfile = {
-    visualStyle,
-    layoutMode: allowed.layoutMode.has(supplied.layoutMode) ? supplied.layoutMode : base.layoutMode,
-    displayFont: allowed.displayFont.has(supplied.displayFont) ? supplied.displayFont : base.displayFont,
-    cardShape: allowed.cardShape.has(supplied.cardShape) ? supplied.cardShape : base.cardShape,
-    patternStyle: allowed.patternStyle.has(supplied.patternStyle) ? supplied.patternStyle : base.patternStyle,
-    motifs: Array.isArray(supplied.motifs) && supplied.motifs.length
-      ? supplied.motifs.filter((value: any) => typeof value === "string" && value.trim()).slice(0, 6).map((value: string) => value.slice(0, 4))
-      : base.motifs,
-    atmosphere: typeof supplied.atmosphere === "string" ? supplied.atmosphere.slice(0, 90) : "Restaurant-led visual identity",
-  };
-};
-
 const normalizeGroundedBrand = async (
   brand: any,
   cleanName: string,
@@ -506,7 +429,6 @@ const normalizeGroundedBrand = async (
   const hasSupportedSource = (value: unknown) => isHttpUrl(value) && supportedSourceUrls.has(value);
   const hasSupportedMapSource = (value: unknown) => isHttpUrl(value) && supportedMapSourceUrls.has(value);
   brand.sources = sources.slice(0, 40);
-  normalizeStyleProfile(brand);
   brand.generationMode = "web-grounded";
   brand.researchProvider = researchProvider;
   brand.officialSiteUrl = isDirectMerchantUrl(brand.officialSiteUrl) && hasSupportedSource(brand.officialSiteUrl)
@@ -650,35 +572,10 @@ const normalizeGroundedBrand = async (
       };
     });
   const firstVerifiedImage = brand.menu.find((item: any) => isHttpUrl(item.image))?.image || "";
-  const normalizedRestaurantIdentity = normalizeIdentity(`${cleanName} ${brand.name || ""} ${brand.nameZh || ""}`);
-  const isTaierBrand = normalizedRestaurantIdentity.includes("taier")
-    || normalizedRestaurantIdentity.includes("太二酸菜鱼");
-  const isJuanxiangBrand = normalizedRestaurantIdentity.includes("juanxiang")
-    || normalizedRestaurantIdentity.includes("眷湘")
-    || normalizedRestaurantIdentity.includes("easterlyhunancuisine");
-  const hasVerifiedLogo = isHttpUrl(brand.logo) && isHttpUrl(brand.logoSourceUrl);
-  const officialSiteFavicon = isHttpUrl(brand.officialSiteUrl)
-    ? `https://www.google.com/s2/favicons?domain_url=${encodeURIComponent(brand.officialSiteUrl)}&sz=256`
-    : "";
-  brand.logo = hasVerifiedLogo ? brand.logo : officialSiteFavicon;
-  brand.logoSourceUrl = hasVerifiedLogo ? brand.logoSourceUrl : (officialSiteFavicon ? brand.officialSiteUrl : "");
+  brand.logo = isHttpUrl(brand.logo) && isHttpUrl(brand.logoSourceUrl) ? brand.logo : firstVerifiedImage;
   brand.heroBanner = isHttpUrl(brand.heroBanner) && isHttpUrl(brand.heroBannerSourceUrl)
     ? brand.heroBanner
     : firstVerifiedImage;
-  if (isTaierBrand) {
-    brand.officialSiteUrl = "https://www.taier.net/";
-    brand.logo = "/brand-assets/taier-avatar.jpg";
-    brand.logoSourceUrl = "https://www.taier.net/";
-    brand.heroBanner = "/brand-assets/taier-hero.jpg";
-    brand.heroBannerSourceUrl = "https://www.taier.net/";
-  }
-  if (isJuanxiangBrand) {
-    brand.officialSiteUrl = "https://order.online/store/Easterly-926097";
-    brand.logo = "/brand-assets/juanxiang-storefront.jpg";
-    brand.logoSourceUrl = "https://easterly-cupertino.wheree.com/";
-    brand.heroBanner = "/brand-assets/juanxiang-storefront.jpg";
-    brand.heroBannerSourceUrl = "https://easterly-cupertino.wheree.com/";
-  }
   brand.promptKeywords = makeRestaurantKeywords(
     brand.name || cleanName,
     brand.nameZh || brand.name || cleanName,
@@ -1634,8 +1531,7 @@ Resolve ambiguous merchants by city, coordinates and cuisine. Use the supplied e
 2) global direct merchant/profile/listing pages on Instagram, Facebook, TikTok/Douyin, YouTube, X/Twitter, Threads, LinkedIn, Pinterest, Xiaohongshu, Weibo, Yelp, TripAdvisor, Google Maps, OpenTable, Foursquare, Zomato, Restaurant Guru, HappyCow, Trustpilot, Dianping/Meituan, Uber Eats, DoorDash and Grubhub where available. Xiaohongshu can be a verified brand profile or a brand-specific note because users comment on notes rather than through a universal merchant-review form;
 3) real branches near the device coordinates or requested city first. If the Maps evidence explicitly says no exact local branch was found and provides global fallback locations, return those real global branches and do not describe them as nearby;
 4) real menu items and prices from an official menu/order page or credible menu listing;
-5) usable merchant or dish photos. Every photo must include imageSourceUrl linking to the page that contains that image. The profile avatar must be the official social avatar, official logo, or official-site icon—never a dish photo, stock image, or generated initial;
-6) a distinctive design direction derived from the exact merchant's cuisine, brand identity, packaging, interiors and any sourced mascot or signature symbol. This must change composition, typography, shapes and patterns—not only colors. Use symbolic text motifs, never invent a trademarked mascot image.
+5) usable merchant or dish photos. Every photo must include imageSourceUrl linking to the page that contains that image.
 
 Never invent data. Never use a platform homepage as a merchant profile. Never reuse generic sample dishes or stock photos. Omit any social, store, menu item, phone, price or image that lacks a supporting source URL. Unknown numeric values must be 0. Return 6-12 sourced menu items and up to 16 sourced social/review/order links when evidence is available. Return up to 5 Google Maps branches ordered nearest-first.
 
@@ -1643,7 +1539,6 @@ Return JSON only with this shape:
 {
   "id":"${brandId}", "name":"", "nameZh":"", "tagline":"", "taglineZh":"",
   "logo":"", "logoSourceUrl":"", "heroBanner":"", "heroBannerSourceUrl":"", "primaryColor":"${targetColor || "#B91C1C"}", "accentColor":"#FEE2E2", "bgColor":"#FFF8F8", "cardBg":"#FFFFFF",
-  "styleProfile":{"visualStyle":"playful|minimal|heritage|street|editorial","layoutMode":"bento|showcase|story|gallery","displayFont":"rounded|modern|serif|condensed","cardShape":"soft|pill|sharp|organic","motifs":["4 to 6 short symbols, emoji or one-character brand cues"],"patternStyle":"confetti|stamp|waves|grid|minimal","atmosphere":"short English art direction"},
   "verifiedBadge":false, "officialSiteUrl":"", "hotline":"", "hotlineLabel":"", "hotlineLabelZh":"", "cateringEmail":"",
   "cuisineType":"", "cuisineTypeZh":"",
   "socials":[{"id":"", "name":"", "nameZh":"", "handle":"", "url":"", "icon":"ExternalLink", "followers":"", "badge":"Merchant page", "color":"#111827", "bgColor":"bg-neutral-50 text-neutral-700 border-neutral-200", "sourceUrl":"", "sourceTitle":""}],
@@ -1681,7 +1576,7 @@ STRICT EVIDENCE POLICY:
 - A menu price is valid only when the evidence clearly supports both the price and its currency for the requested city/market. Otherwise set price to 0 and currency to an empty string. Never reuse another country's menu price for ${city}.
 - Aim for at least 8 menu items when the evidence supports them. If a menu page, order page, menu photo description or Maps evidence clearly enumerates multiple dish/drink names, create a separate menu item for every clearly named item up to 12. A missing price does not disqualify an otherwise source-backed item; use price 0 and an empty currency.
 - A menu image must be a direct image URL explicitly present in evidence. For each menu item, prefer an individual product photo whose evidence description explicitly names that dish or drink; otherwise use a menu image only when its description clearly matches that item. Set imageSourceUrl to its containing source page when supplied; for a clearly matching Tavily image candidate without a page URL, imageSourceUrl may equal the image URL itself. Otherwise set image to an empty string.
-- logo must be an official social avatar, official logo asset, or official-site icon. Never use a dish/store photo or stock image as logo. logo and heroBanner require logoSourceUrl / heroBannerSourceUrl; otherwise leave them empty.
+- logo and heroBanner follow the same rule and require logoSourceUrl / heroBannerSourceUrl. Otherwise leave them empty.
 - If merchant identity is ambiguous, return only facts for the location-matched merchant and add a warning.
 - Never manufacture ratings, review counts, queue counts, coordinates, prices, hours, phone numbers or social follower counts.
 
@@ -2454,7 +2349,6 @@ ${sourceList || "No source URL was returned."}`;
       };
     }
 
-    normalizeStyleProfile(fallbackBrand);
     const fallbackIdentityBrand = { name: fallbackBrand.name, nameZh: fallbackBrand.nameZh };
     fallbackBrand.generationMode = "template";
     fallbackBrand.dataQuality = "unverified";

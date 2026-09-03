@@ -923,16 +923,14 @@ export const JUANXIANG_BRAND: BrandConfig = {
   nameZh: '眷湘 · 地道湖南菜 (Juan Xiang)',
   tagline: 'Sizzling wok aroma, authentic Hunan spice, and genuine lake-and-mountain hospitality.',
   taglineZh: '热辣生香，地道湖湘风味 · 现炒锅气，传承经典地道湘菜烹饪技艺。',
-  logo: '/brand-assets/juanxiang-storefront.jpg',
-  logoSourceUrl: 'https://easterly-cupertino.wheree.com/',
-  heroBanner: '/brand-assets/juanxiang-storefront.jpg',
-  heroBannerSourceUrl: 'https://easterly-cupertino.wheree.com/',
+  logo: 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=300&auto=format&fit=crop&q=80',
+  heroBanner: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&auto=format&fit=crop&q=80',
   primaryColor: '#C41212',
   accentColor: '#FEE2E2',
   bgColor: '#FFFBF7',
   cardBg: '#FFFFFF',
   verifiedBadge: true,
-  officialSiteUrl: 'https://order.online/store/Easterly-926097',
+  officialSiteUrl: 'https://www.juanxiang.com',
   hotline: '400-820-7799',
   hotlineLabel: '400-820-7799',
   hotlineLabelZh: '400-820-7799 (眷湘官方服务热线)',
@@ -1072,10 +1070,8 @@ export const TAIER_BRAND: BrandConfig = {
   nameZh: '太二酸菜鱼 (Tai Er)',
   tagline: 'Our sauerkraut tastes even better than the fish. Authentic Sichuan flavors.',
   taglineZh: '酸菜比鱼好吃 · 甄选古法老坛腌制酸菜与新鲜活鱼，麻辣酸爽。',
-  logo: '/brand-assets/taier-avatar.jpg',
-  logoSourceUrl: 'https://www.taier.net/',
-  heroBanner: '/brand-assets/taier-hero.jpg',
-  heroBannerSourceUrl: 'https://www.taier.net/',
+  logo: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=300&auto=format&fit=crop&q=80',
+  heroBanner: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200&auto=format&fit=crop&q=80',
   primaryColor: '#E65100',
   accentColor: '#FFEDD5',
   bgColor: '#FFFDF9',
@@ -1093,8 +1089,9 @@ export const TAIER_BRAND: BrandConfig = {
     en: ['🐟 Signature Sauerkraut Sea Bass Golden Broth', '🥩 Crispy Sichuan Pepper Pork Bites', '✨ Free Roselle Citrus Hot Tea Bar', '🥬 Poached Baby Cabbage in Bone Broth', '⚡ Fast Mobile Check-in & Seating', '🌟 Sauerkraut That Tastes Better Than Fish']
   },
   socials: [
-    { id: 'weibo', name: 'Weibo', nameZh: '太二酸菜鱼官方微博', handle: '@太二酸菜鱼', url: 'https://www.weibo.com/taier22', icon: 'MessageCircle', followers: '', badge: 'Verified Official', color: '#E6162D', bgColor: 'bg-red-50 text-red-700 border-red-200', sourceUrl: 'https://www.weibo.com/taier22', sourceTitle: '太二酸菜鱼官方微博' },
-    { id: 'x', name: 'X / Twitter', nameZh: '太二酸菜鱼官方 X', handle: '@TaiEr_', url: 'https://x.com/TaiEr_', icon: 'Twitter', followers: '', badge: 'Official Brand Profile', color: '#111827', bgColor: 'bg-neutral-50 text-neutral-700 border-neutral-200', sourceUrl: 'https://x.com/TaiEr_', sourceTitle: '太二酸菜鱼 @TaiEr_' }
+    { id: 'xiaohongshu', name: 'Xiaohongshu (RED)', nameZh: '小红书 官方号', handle: '@太二酸菜鱼', url: 'https://www.xiaohongshu.com', icon: 'BookOpen', followers: '1.5M Followers', badge: 'Sauerkraut King', color: '#FF2442', bgColor: 'bg-rose-50 text-rose-700 border-rose-200' },
+    { id: 'instagram', name: 'Instagram', nameZh: 'Instagram 官方', handle: '@taier.fish', url: 'https://www.instagram.com', icon: 'Instagram', followers: '210K Followers', badge: 'Official', color: '#E4405F', bgColor: 'bg-pink-50 text-pink-700 border-pink-200' },
+    { id: 'google', name: 'Google Maps', nameZh: 'Google 认证商家', handle: '@TaiErFish', url: 'https://www.google.com/maps', icon: 'Globe', followers: '4.8 ★', badge: 'Popular Pick', color: '#4285F4', bgColor: 'bg-blue-50 text-blue-700 border-blue-200' }
   ],
   stores: [
     {

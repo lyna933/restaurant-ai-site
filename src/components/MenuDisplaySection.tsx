@@ -125,7 +125,7 @@ export const MenuDisplaySection: React.FC<MenuDisplaySectionProps> = ({
   return (
     <section id="section-menu" className="scroll-mt-16 space-y-4">
       {/* Section Header */}
-      <div className="brand-section-heading flex items-center justify-between mb-1">
+      <div className="flex items-center justify-between mb-1">
         <div className="flex items-center gap-2.5">
           <span 
             className="w-8 h-8 rounded-xl text-white flex items-center justify-center font-bold text-sm shadow-xs transition-colors"
@@ -280,16 +280,16 @@ export const MenuDisplaySection: React.FC<MenuDisplaySectionProps> = ({
           {isZh ? '暂未找到有可验证来源的菜单。启用全网检索后重新生成。' : 'No menu with verifiable sources was found. Enable web research and regenerate.'}
         </div>
       )}
-      <div className="menu-product-grid grid grid-cols-1 md:grid-cols-2 gap-3.5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
         {filteredMenu.map((item) => {
           return (
             <div
               key={item.id}
               onClick={() => setSelectedItemDetail(item)}
-              className="menu-product-card bg-white rounded-2xl p-3.5 border border-neutral-200 shadow-xs hover:border-neutral-300 hover:shadow-md transition-all flex gap-3.5 group cursor-pointer"
+              className="bg-white rounded-2xl p-3.5 border border-neutral-200 shadow-xs hover:border-neutral-300 hover:shadow-md transition-all flex gap-3.5 group cursor-pointer"
             >
               {/* Product Thumbnail */}
-              <div className="menu-product-image relative w-24 h-24 sm:w-28 sm:h-28 rounded-xl overflow-hidden bg-neutral-100 shrink-0">
+              <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-xl overflow-hidden bg-neutral-100 shrink-0">
                 {item.image ? (
                   <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" referrerPolicy="no-referrer" />
                 ) : (
@@ -306,7 +306,7 @@ export const MenuDisplaySection: React.FC<MenuDisplaySectionProps> = ({
               </div>
 
               {/* Product Info & Specifications Preview */}
-              <div className="menu-product-copy flex-1 flex flex-col justify-between min-w-0">
+              <div className="flex-1 flex flex-col justify-between min-w-0">
                 <div>
                   <div className="flex items-start justify-between gap-1">
                     <h4 className="font-bold text-neutral-900 text-sm sm:text-base leading-tight group-hover:text-neutral-700 transition-colors">
