@@ -48,9 +48,14 @@ export const Header: React.FC<HeaderProps> = ({
     if (!brand.officialSiteUrl) return '';
     return `https://www.google.com/s2/favicons?domain_url=${encodeURIComponent(brand.officialSiteUrl)}&sz=256`;
   }, [brand.logo, brand.officialSiteUrl]);
+  const [avatarLoadFailed, setAvatarLoadFailed] = useState(false);
+  const [heroLoadFailed, setHeroLoadFailed] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isBrandDropdownOpen, setIsBrandDropdownOpen] = useState(false);
   const verifiedRating = brand.stores.find((store) => Number(store.rating) > 0)?.rating;
+
+  useEffect(() => setAvatarLoadFailed(false), [officialAvatarUrl]);
+  useEffect(() => setHeroLoadFailed(false), [brand.heroBanner]);
   const langRef = useRef<HTMLDivElement>(null);
   const brandRef = useRef<HTMLDivElement>(null);
 
@@ -202,21 +207,30 @@ export const Header: React.FC<HeaderProps> = ({
         <div
           className="brand-mascot-board"
           aria-hidden="true"
-          style={brand.heroBanner ? {
-            backgroundImage: `linear-gradient(180deg, transparent 40%, ${brand.primaryColor}1A 72%, ${brand.primaryColor}66 100%), url(${brand.heroBanner})`,
-          } : undefined}
-        />
+        >
+          {brand.heroBanner && !heroLoadFailed && (
+            <img
+              src={brand.heroBanner}
+              alt=""
+              className="brand-hero-image"
+              referrerPolicy="no-referrer"
+              onError={() => setHeroLoadFailed(true)}
+            />
+          )}
+          <span className="brand-hero-image-shade" style={{ background: `linear-gradient(180deg, transparent 40%, ${brand.primaryColor}1A 72%, ${brand.primaryColor}66 100%)` }} />
+        </div>
         <div className="brand-hero-inner max-w-6xl mx-auto flex flex-col relative z-10">
           
           {/* Logo Avatar */}
           <div className="brand-logo-lockup relative mb-3 group">
             <div className="brand-logo-frame w-20 h-20 sm:w-24 sm:h-24 border-2 border-white/95 shadow-xl overflow-hidden bg-white flex items-center justify-center p-1">
-              {officialAvatarUrl ? (
+              {officialAvatarUrl && !avatarLoadFailed ? (
                 <img
                   src={officialAvatarUrl}
                   alt={isZh ? `${brand.nameZh} official logo` : `${brand.name} official logo`}
-                  className="w-full h-full object-contain rounded-full"
+                  className={`brand-avatar-image brand-avatar-image-${brand.id} w-full h-full object-contain rounded-full`}
                   referrerPolicy="no-referrer"
+                  onError={() => setAvatarLoadFailed(true)}
                 />
               ) : (
                 <Store className="w-9 h-9" aria-label={isZh ? '官方商家图标' : 'Official merchant icon'} style={{ color: brand.primaryColor }} />

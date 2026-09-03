@@ -653,6 +653,9 @@ const normalizeGroundedBrand = async (
   const normalizedRestaurantIdentity = normalizeIdentity(`${cleanName} ${brand.name || ""} ${brand.nameZh || ""}`);
   const isTaierBrand = normalizedRestaurantIdentity.includes("taier")
     || normalizedRestaurantIdentity.includes("太二酸菜鱼");
+  const isJuanxiangBrand = normalizedRestaurantIdentity.includes("juanxiang")
+    || normalizedRestaurantIdentity.includes("眷湘")
+    || normalizedRestaurantIdentity.includes("easterlyhunancuisine");
   const hasVerifiedLogo = isHttpUrl(brand.logo) && isHttpUrl(brand.logoSourceUrl);
   const officialSiteFavicon = isHttpUrl(brand.officialSiteUrl)
     ? `https://www.google.com/s2/favicons?domain_url=${encodeURIComponent(brand.officialSiteUrl)}&sz=256`
@@ -664,10 +667,17 @@ const normalizeGroundedBrand = async (
     : firstVerifiedImage;
   if (isTaierBrand) {
     brand.officialSiteUrl = "https://www.taier.net/";
-    brand.logo = "https://www.taier.net/vancheerfile/images/2026/8/20260803180443179.png";
+    brand.logo = "/brand-assets/taier-avatar.jpg";
     brand.logoSourceUrl = "https://www.taier.net/";
-    brand.heroBanner = "https://www.taier.net/vancheerfile/images/2026/7/20260731144850107.jpg";
+    brand.heroBanner = "/brand-assets/taier-hero.jpg";
     brand.heroBannerSourceUrl = "https://www.taier.net/";
+  }
+  if (isJuanxiangBrand) {
+    brand.officialSiteUrl = "https://order.online/store/Easterly-926097";
+    brand.logo = "/brand-assets/juanxiang-storefront.jpg";
+    brand.logoSourceUrl = "https://easterly-cupertino.wheree.com/";
+    brand.heroBanner = "/brand-assets/juanxiang-storefront.jpg";
+    brand.heroBannerSourceUrl = "https://easterly-cupertino.wheree.com/";
   }
   brand.promptKeywords = makeRestaurantKeywords(
     brand.name || cleanName,
