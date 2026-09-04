@@ -2,6 +2,8 @@ import express from "express";
 import path from "path";
 import dotenv from "dotenv";
 import Stripe from "stripe";
+import { getCuratedVerifiedSocials, socialProfile, profileKey } from "./src/utils/socialProfiles.js";
+import { sourceMatchesRestaurant } from "./src/utils/brandIdentity.js";
 import { inferBrandCategory, getAccurateDishImage, generateCustomCategoryDishes } from "./server/restaurantGenerator.js";
 import { callGemini, getGeminiConfig, researchRestaurantWithGemini } from "./server/geminiClient.js";
 import { getTavilyConfig, researchReviewPlatformsForBranches } from "./server/tavilyClient.js";
@@ -76,42 +78,15 @@ const classifyVerifiedLink = (source: any) => {
   const profile = (name: string, nameZh: string, icon: string, badge: string) => ({
     name, nameZh, icon, badge,
   });
+  const directSocial = socialProfile(source.url);
+  if (directSocial) return directSocial;
 
   if (source.kind === "maps" && (host === "maps.google.com" || host.endsWith(".google.com"))) {
     return profile("Google Maps", "Google 地图", "MapPin", "Nearest location");
   }
-  if (host.endsWith("instagram.com") && segments.length === 1 && !["p", "reel", "reels", "explore"].includes(first)) {
-    return profile("Instagram", "Instagram", "Instagram", "Merchant profile");
-  }
-  if (host.endsWith("facebook.com") && segments.length === 1 && !["watch", "reel", "reels", "groups"].includes(first)) {
-    return profile("Facebook", "Facebook", "Facebook", "Merchant profile");
-  }
-  if (host.endsWith("tiktok.com") && first.startsWith("@") && segments.length === 1) {
-    return profile("TikTok", "TikTok / 抖音海外", "Video", "Merchant profile");
-  }
-  if (host.endsWith("youtube.com") && (["channel", "c", "user"].includes(first) || first.startsWith("@"))) {
-    return profile("YouTube", "YouTube", "Play", "Merchant channel");
-  }
-  if ((host === "x.com" || host.endsWith("twitter.com")) && segments.length === 1 && !["home", "search", "explore", "intent", "i"].includes(first)) {
-    return profile("X / Twitter", "X / Twitter", "Twitter", "Merchant profile");
-  }
-  if (host.endsWith("threads.net") && segments.length === 1 && first.startsWith("@")) {
-    return profile("Threads", "Threads", "Share2", "Merchant profile");
-  }
-  if (host.endsWith("linkedin.com") && first === "company" && segments.length === 2) {
-    return profile("LinkedIn", "LinkedIn", "Linkedin", "Merchant page");
-  }
-  if (host.endsWith("pinterest.com") && segments.length === 1 && !["search", "pin", "ideas"].includes(first)) {
-    return profile("Pinterest", "Pinterest", "Share2", "Merchant profile");
-  }
-  if (host.endsWith("xiaohongshu.com") && first === "user" && segments[1] === "profile") {
-    return profile("Xiaohongshu (RED)", "小红书", "BookOpen", "Brand profile — comment on posts");
-  }
-  if (host.endsWith("xiaohongshu.com") && ["explore", "discovery"].includes(first) && segments.length >= 2) {
+  // RED notes are review/comment targets, not social profile cards.
+  if ((host === "xiaohongshu.com" || host.endsWith(".xiaohongshu.com")) && ["explore", "discovery"].includes(first) && segments.length >= 2) {
     return profile("Xiaohongshu (RED)", "小红书", "BookOpen", "Brand post — comments available");
-  }
-  if (host.endsWith("weibo.com") && (first === "u" || segments.length === 1)) {
-    return profile("Weibo", "微博", "Share2", "Merchant profile");
   }
   if (host.endsWith("yelp.com") && first === "biz") {
     return profile("Yelp", "Yelp 评价", "Star", "Reviews");
@@ -152,136 +127,6 @@ const classifyVerifiedLink = (source: any) => {
   return null;
 };
 
-const getCuratedVerifiedSocials = (cleanName: string, brand: any) => {
-  const identities = [cleanName, brand?.name, brand?.nameZh]
-    .map(normalizeIdentity)
-    .filter(Boolean);
-  const isHaidilao = identities.some((identity) =>
-    identity.includes("haidilao") || identity.includes("海底捞") || identity.includes("海底撈"),
-  );
-  const isHeytea = identities.some((identity) =>
-    identity.includes("heytea") || identity.includes("喜茶"),
-  );
-  const isTaier = identities.some((identity) =>
-    identity.includes("taier") || identity.includes("太二酸菜鱼") || identity === "太二",
-  );
-  const profiles: any[] = [];
-
-  if (isHeytea) {
-    profiles.push(
-      {
-        id: "curated-instagram-heytea-us",
-        name: "Instagram",
-        nameZh: "喜茶美国 · Instagram",
-        handle: "@heytea.usa",
-        url: "https://www.instagram.com/heytea.usa",
-        icon: "Instagram",
-        followers: "",
-        badge: "Verified US merchant profile",
-        color: "#E1306C",
-        bgColor: "bg-pink-50 text-pink-700 border-pink-200",
-        sourceUrl: "https://www.instagram.com/heytea.usa",
-        sourceTitle: "HEYTEA USA · @heytea.usa",
-      },
-      {
-        id: "curated-x-heytea-global",
-        name: "X / Twitter",
-        nameZh: "喜茶全球 · X",
-        handle: "@HEYTEA",
-        url: "https://x.com/HEYTEA",
-        icon: "Twitter",
-        followers: "",
-        badge: "Verified global brand profile",
-        color: "#111827",
-        bgColor: "bg-neutral-50 text-neutral-700 border-neutral-200",
-        sourceUrl: "https://x.com/HEYTEA",
-        sourceTitle: "HEYTEA Global · @HEYTEA",
-      },
-    );
-  }
-
-  if (isHaidilao) {
-    profiles.push(
-      {
-        id: "curated-instagram-haidilao-us",
-        name: "Instagram",
-        nameZh: "海底捞美国 · Instagram",
-        handle: "@haidilao_us",
-        url: "https://www.instagram.com/haidilao_us",
-        icon: "Instagram",
-        followers: "",
-        badge: "Verified US merchant profile",
-        color: "#E1306C",
-        bgColor: "bg-pink-50 text-pink-700 border-pink-200",
-        sourceUrl: "https://www.instagram.com/haidilao_us",
-        sourceTitle: "Haidilao US · @haidilao_us",
-      },
-      {
-        id: "curated-facebook-haidilao-us",
-        name: "Facebook",
-        nameZh: "海底捞美国 · Facebook",
-        handle: "@haidilaohotpotus",
-        url: "https://www.facebook.com/haidilaohotpotus",
-        icon: "Facebook",
-        followers: "",
-        badge: "Verified US merchant profile",
-        color: "#1877F2",
-        bgColor: "bg-blue-50 text-blue-700 border-blue-200",
-        sourceUrl: "https://www.facebook.com/haidilaohotpotus",
-        sourceTitle: "Haidilao US · @haidilaohotpotus",
-      },
-      {
-        id: "curated-xiaohongshu-haidilao-us",
-        name: "Xiaohongshu (RED)",
-        nameZh: "海底捞火锅—美国 · 小红书",
-        handle: "27769365676",
-        url: "https://www.xiaohongshu.com/user/profile/607fc46e000000000101f156",
-        icon: "BookOpen",
-        followers: "",
-        badge: "Verified merchant profile",
-        color: "#FF2442",
-        bgColor: "bg-rose-50 text-rose-700 border-rose-200",
-        sourceUrl: "https://www.xiaohongshu.com/user/profile/607fc46e000000000101f156",
-        sourceTitle: "海底捞火锅—美国 · 小红书号 27769365676",
-      },
-    );
-  }
-
-  if (isTaier) {
-    profiles.push(
-      {
-        id: "curated-weibo-taier",
-        name: "Weibo",
-        nameZh: "太二酸菜鱼官方微博",
-        handle: "@太二酸菜鱼",
-        url: "https://www.weibo.com/taier22",
-        icon: "MessageCircle",
-        followers: "",
-        badge: "Verified Official",
-        color: "#E6162D",
-        bgColor: "bg-red-50 text-red-700 border-red-200",
-        sourceUrl: "https://www.weibo.com/taier22",
-        sourceTitle: "太二酸菜鱼官方微博",
-      },
-      {
-        id: "curated-x-taier",
-        name: "X / Twitter",
-        nameZh: "太二酸菜鱼官方 X",
-        handle: "@TaiEr_",
-        url: "https://x.com/TaiEr_",
-        icon: "Twitter",
-        followers: "",
-        badge: "Official Brand Profile",
-        color: "#111827",
-        bgColor: "bg-neutral-50 text-neutral-700 border-neutral-200",
-        sourceUrl: "https://x.com/TaiEr_",
-        sourceTitle: "太二酸菜鱼 @TaiEr_",
-      },
-    );
-  }
-
-  return profiles;
-};
 
 const makeRestaurantKeywords = (brandNameEn: string, brandNameZh: string, menu: any[]) => {
   const items = (Array.isArray(menu) ? menu : []).slice(0, 4);
@@ -311,6 +156,12 @@ const expandKnownBrandIdentities = (values: string[]) => {
   );
   if (hasHeytea) ["heytea", "喜茶"].forEach((value) => expanded.add(value));
   if (hasHaidilao) ["haidilao", "haidilaohotpot", "海底捞", "海底撈"].forEach((value) => expanded.add(value));
+  if ([...expanded].some(value => /juanxiang|眷湘|easterlyhunan/.test(value) || value === "easterly")) {
+    ["juanxiang", "眷湘", "easterly", "easterlyhunancuisine"].forEach(value => expanded.add(value));
+  }
+  if ([...expanded].some(value => /luckincoffee|瑞幸/.test(value) || value === "luckin")) {
+    ["luckincoffee", "瑞幸", "瑞幸咖啡"].forEach(value => expanded.add(value));
+  }
   return [...expanded];
 };
 
@@ -409,15 +260,8 @@ const geocodeVerifiedAddress = async (address: string) => {
 };
 
 const merchantIdentityMatches = (brand: any, cleanName: string, store: any) => {
-  const merchantNames = expandKnownBrandIdentities([cleanName, brand?.name, brand?.nameZh]
-    .map(normalizeIdentity)
-    .filter((value, index, all) => value.length >= 2 && all.indexOf(value) === index));
-  const storeNames = [store?.name, store?.nameZh]
-    .map(normalizeIdentity)
-    .filter((value) => value.length >= 2);
-  return merchantNames.some((merchantName) =>
-    storeNames.some((storeName) => storeName.includes(merchantName) || merchantName.includes(storeName)),
-  );
+  return [store?.name, store?.nameZh].some(name =>
+    sourceMatchesRestaurant(cleanName, name || "", [brand?.name, brand?.nameZh]));
 };
 
 const generatedBrandMatchesInput = (brand: any, cleanName: string) => {
@@ -516,12 +360,17 @@ const normalizeGroundedBrand = async (
     .filter((social: any) => {
       // Model output must still satisfy the same strict, platform-specific profile/listing patterns
       // as links discovered directly from sources. This rejects posts, videos, searches and homepages.
-      return !!classifyVerifiedLink({ url: social?.url }) && hasSupportedSource(social?.sourceUrl);
+      if (!classifyVerifiedLink({ url: social?.url }) || !hasSupportedSource(social?.sourceUrl)) return false;
+      if (!socialProfile(social.url)) return true;
+      const evidence = sources.find(source => source.url === social.sourceUrl || source.url === social.url);
+      return !!evidence && merchantIdentityMatches(brand, cleanName, {
+        name: (evidence.title || "") + " " + (evidence.sourcePage || evidence.url),
+      });
     })
     .map((social: any) => ({
       ...social,
       followers: social.followers && !/^0(?:\s|$)/.test(String(social.followers)) ? social.followers : "",
-      sourceUrl: social.sourceUrl || social.url,
+      sourceUrl: sources.find(source => source.url === social.url)?.sourcePage || social.sourceUrl || social.url,
     }));
   if (!brandIdentityMismatch) {
     const extraLinks: any[] = [];
@@ -539,10 +388,11 @@ const normalizeGroundedBrand = async (
         sourceIdentity += ` ${decodeURIComponent(new URL(source.url).pathname)}`;
       } catch {}
       if (!merchantIdentityMatches(brand, cleanName, { name: sourceIdentity, nameZh: sourceIdentity })) continue;
-      extraLinks.push({ ...link, url: source.url, sourceUrl: source.url, sourceTitle: source.title || link.name });
+      extraLinks.push({ ...link, url: source.url, sourceUrl: source.sourcePage || source.url, sourceTitle: source.title || link.name });
     }
+    extraLinks.sort((a, b) => Number(!!socialProfile(b.url)) - Number(!!socialProfile(a.url)));
     for (const link of extraLinks) {
-      if (brand.socials.some((social: any) => social.url === link.url || social.name === link.name)) continue;
+      if (brand.socials.some((social: any) => profileKey(social.url) === profileKey(link.url))) continue;
       brand.socials.push({
         id: `verified-link-${brand.socials.length + 1}`,
         ...link,
@@ -689,7 +539,8 @@ const normalizeGroundedBrand = async (
   }
   brand.hotlineLabel = brand.hotline || "Not verified";
   brand.hotlineLabelZh = brand.hotline || "未查证";
-  const verifiedSections = [brand.stores.length > 0, brand.menu.length > 0, brand.socials.length > 0].filter(Boolean).length;
+  const hasSocialProfiles = brand.socials.some((social: any) => !!socialProfile(social.url));
+  const verifiedSections = [brand.stores.length > 0, brand.menu.length > 0, hasSocialProfiles].filter(Boolean).length;
   brand.dataQuality = sources.length > 0 && verifiedSections >= 2 ? "verified" : "partial";
   brand.verifiedBadge = sources.length > 0 && verifiedSections >= 2;
   brand.warnings = [];
@@ -698,7 +549,7 @@ const normalizeGroundedBrand = async (
   if (identityMismatchCount > 0) brand.warnings.push("地图候选门店名称与输入商家不一致，已自动剔除，避免误用其他餐馆资料。");
   if (brand.stores.length === 0) brand.warnings.push("尚未确认与输入名称完全匹配的门店地址和电话。");
   if (brand.menu.length === 0) brand.warnings.push("尚未找到有网页来源支持的真实菜单和菜品图片。");
-  if (brand.socials.length === 0) brand.warnings.push("尚未找到有网页来源支持的商家社交媒体主页。");
+  if (!hasSocialProfiles) brand.warnings.push("尚未找到有网页来源支持的商家社交媒体主页。");
   return brand;
 };
 
@@ -1665,7 +1516,8 @@ Return JSON only with this shape:
           title: source.title,
           url: source.url,
           kind: source.kind,
-          placeId: "placeId" in source ? source.placeId : undefined,
+                placeId: "placeId" in source ? source.placeId : undefined,
+                sourcePage: "sourcePage" in source ? source.sourcePage : undefined,
         }));
         fallbackResearchProvider = evidence.searchProvider === "tavily" ? "gemini-tavily-maps" : "gemini-google";
         const sourceList = evidence.sources
@@ -1706,6 +1558,7 @@ ${sourceList || "No source URL was returned."}`;
               title: source.title,
               url: source.url,
               kind: source.kind,
+              sourcePage: "sourcePage" in source ? source.sourcePage : undefined,
               placeId: "placeId" in source ? source.placeId : undefined,
             }));
             await normalizeGroundedBrand(

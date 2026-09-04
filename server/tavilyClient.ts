@@ -1,7 +1,11 @@
+import { extractSocialEvidence, hasMatchingBrandDomain } from './socialEvidence.js';
+import { restaurantSearchName } from '../src/utils/brandIdentity.js';
+
 export interface TavilySource {
   title: string;
   url: string;
   kind: "tavily";
+  sourcePage?: string;
 }
 
 interface TavilyImage {
@@ -38,7 +42,7 @@ const isHttpUrl = (value: unknown): value is string => {
 
 const socialPlatformHosts = [
   "instagram.com", "facebook.com", "tiktok.com", "youtube.com", "x.com",
-  "twitter.com", "threads.net", "linkedin.com", "pinterest.com",
+  "twitter.com", "threads.net", "threads.com", "linkedin.com", "pinterest.com", "linktr.ee",
   "xiaohongshu.com", "weibo.com", "douyin.com",
 ];
 
@@ -67,16 +71,19 @@ const extractOfficialSiteSocialLinks = async (
   const identity = restaurantName.toLowerCase().replace(/[^a-z0-9\u3400-\u9fff]+/g, "");
   const candidates = pages
     .filter((page) => {
-      if (!isHttpUrl(page.url) || isSocialPlatformUrl(page.url!)) return false;
+      if (!isHttpUrl(page.url)) return false;
       const parsed = new URL(page.url!);
       const host = parsed.hostname.toLowerCase().replace(/^www\./, "");
+      if (host === "linktr.ee") {
+        const hubIdentity = (parsed.pathname + ' ' + (page.title || '')).toLowerCase().replace(/[^a-z0-9\u3400-\u9fff]+/g, '');
+        return identity.length >= 3 && hubIdentity.includes(identity);
+      }
+      if (isSocialPlatformUrl(page.url!)) return false;
       if (thirdPartyDirectoryHosts.some((candidate) => host === candidate || host.endsWith(`.${candidate}`))) return false;
       const hostIdentity = host.split(".")[0].replace(/[^a-z0-9\u3400-\u9fff]+/g, "");
       const titleIdentity = (page.title || "").toLowerCase().replace(/[^a-z0-9\u3400-\u9fff]+/g, "");
-      const exactBrandMatch = identity.length >= 4
-        && (hostIdentity.includes(identity) || identity.includes(hostIdentity) || titleIdentity.includes(identity));
-      const officialTitleMatch = /\bofficial\b|官网|官方網站|公式サイト/i.test(page.title || "");
-      return exactBrandMatch || officialTitleMatch;
+      // A coupon/directory article mentioning the brand is not the restaurant's website.
+      return hasMatchingBrandDomain(page.url!, restaurantName);
     })
     .sort((a, b) => {
       const score = (page: { title?: string; url?: string }) => {
@@ -104,21 +111,7 @@ const extractOfficialSiteSocialLinks = async (
       });
       if (!response.ok || !(response.headers.get("content-type") || "").includes("text/html")) return [];
       const html = (await response.text()).slice(0, 2_000_000);
-      const links: Array<{ title: string; url: string; sourcePage: string }> = [];
-      for (const match of html.matchAll(/href\s*=\s*["']([^"']+)["']/gi)) {
-        const raw = match[1].replace(/&amp;/g, "&").trim();
-        try {
-          const resolved = new URL(raw, response.url || page.url!).toString();
-          if (!isHttpUrl(resolved) || !isSocialPlatformUrl(resolved)) continue;
-          if (links.some((link) => link.url === resolved)) continue;
-          links.push({
-            title: `${restaurantName} — link verified from ${new URL(response.url || page.url!).hostname}`,
-            url: resolved,
-            sourcePage: page.url!,
-          });
-        } catch {}
-      }
-      return links.slice(0, 20);
+      return extractSocialEvidence(html, response.url || page.url!, restaurantName);
     } finally {
       clearTimeout(timeout);
     }
@@ -181,12 +174,13 @@ export async function researchRestaurantWithTavily(input: {
   city: string;
   cuisineType: string;
 }) {
+  input = { ...input, name: restaurantSearchName(input.name) };
   const location = input.city || "local area";
   const queries = [
-    `"${input.name}" official name Chinese name English name alias global official website contact phone worldwide locations official social profile avatar logo image brand colors mascot visual identity`,
+    `${input.name} official website`,
     `"${input.name}" ${location} global official menu full menu signature dishes individual product photos prices image gallery ${input.cuisineType || "restaurant"}`,
-    `"${input.name}" official Instagram profile account`,
-    `"${input.name}" official Facebook page profile account`,
+    `${input.name} official Instagram`,
+    `${input.name} official Facebook`,
     `"${input.name}" official TikTok YouTube X Twitter Threads LinkedIn Pinterest profile channel account`,
     `"${input.name}" Chinese name official Xiaohongshu RED 小红书 Weibo 微博 Douyin 抖音 brand profile account post`,
     `"${input.name}" ${location} Google Maps Yelp TripAdvisor Facebook reviews address`,
@@ -225,6 +219,9 @@ export async function researchRestaurantWithTavily(input: {
       maxResults: 16,
       includeDomains: ["ubereats.com", "doordash.com", "grubhub.com"],
     }),
+    tavilySearch('"' + input.name + '" official social links Linktree', {
+      maxResults: 5, includeDomains: ["linktr.ee"],
+    }),
   ]);
   const successful = settled
     .filter((item): item is PromiseFulfilledResult<TavilySearchResponse> => item.status === "fulfilled")
@@ -248,7 +245,7 @@ export async function researchRestaurantWithTavily(input: {
   }));
   for (const link of officialSiteSocialLinks) {
     if (sources.some((source) => source.url === link.url)) continue;
-    sources.push({ title: link.title, url: link.url, kind: "tavily" });
+    sources.push({ title: link.title, url: link.url, kind: "tavily", sourcePage: link.sourcePage });
   }
 
   const images: TavilyImage[] = [];

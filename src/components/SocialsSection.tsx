@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { SocialLink, Language, BrandConfig } from '../types';
 import { TRANSLATIONS } from '../utils/translations';
+import { socialProfile } from '../utils/socialProfiles';
 import { 
   Instagram, 
   Video, 
@@ -67,10 +68,7 @@ export const SocialsSection: React.FC<SocialsSectionProps> = ({
       const url = new URL(value);
       const host = url.hostname.toLowerCase().replace(/^www\./, '');
       const segments = url.pathname.split('/').filter(Boolean);
-      if (host.endsWith('facebook.com') && segments[0]) {
-        return `${url.origin}/${segments[0]}`;
-      }
-      return value;
+      return socialProfile(value)?.url || value;
     } catch {
       return value;
     }

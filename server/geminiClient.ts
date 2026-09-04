@@ -1,4 +1,5 @@
 import { getTavilyConfig, researchRestaurantWithTavily } from "./tavilyClient.js";
+import { restaurantSearchName } from "../src/utils/brandIdentity.js";
 
 export interface GroundingSource {
   title: string;
@@ -139,6 +140,7 @@ export async function researchRestaurantWithGemini(input: {
   latitude?: number;
   longitude?: number;
 }) {
+  input = { ...input, name: restaurantSearchName(input.name) };
   const hasLocation = Number.isFinite(input.latitude) && Number.isFinite(input.longitude);
   const searchPrompt = `Research the exact restaurant or merchant "${input.name}" for a source-backed restaurant website. Brand identity, official website, and official social accounts must be researched globally and must not be limited by the device location. Store-specific review and menu evidence should prefer ${input.city || "the requested market"}.
 Cuisine hint: ${input.cuisineType || "not specified"}
@@ -146,7 +148,7 @@ User menu notes: ${input.menuInput || "none"}
 Research separately: (1) official website/contact page; (2) direct merchant pages on Instagram, Facebook, TikTok/Douyin, Xiaohongshu, Weibo, YouTube, Yelp, TripAdvisor, Dianping/Meituan and delivery platforms; (3) the official social avatar, official logo asset or official-site icon (never use a dish photo or generated initial as the profile avatar); (4) official or credible menu pages with real dish names and prices; (5) merchant/dish image URLs only when the image itself and its containing source page are both available; (6) recognizable official visual identity cues such as brand colors, logo shape, mascot, packaging motifs, interior mood and typography style, clearly distinguishing sourced facts from visual design inference.
 Return concise factual notes with the source name beside every fact. Never treat a platform homepage as the merchant profile and never invent handles, followers, dishes, prices, phones, addresses or images.`;
 
-  const globalChineseSocialPrompt = `Use Google Search to research the global Chinese-language identity and social presence of the exact restaurant brand "${input.name}". This search is global and MUST NOT be restricted to ${input.city || "the device location"}.
+  const globalChineseSocialPrompt = `Use Google Search to research the global identity and social presence of the exact restaurant brand "${input.name}". This search is global and MUST NOT be restricted to ${input.city || "the device location"}. First search the official website and its linked Instagram, Facebook, TikTok, YouTube, X, Threads and Linktree profiles. Keep region-specific accounts labelled. Report exact profile URLs and the official page linking to each account; never substitute fan accounts.
 First identify the brand's verified Chinese name and aliases. Then find direct brand-specific URLs on Xiaohongshu/RED (xiaohongshu.com user profile or brand-specific note), Weibo, Douyin, WeChat public-account references, and Dianping where available. A Xiaohongshu note is useful because users can comment on the note even when the platform has no universal merchant review form. Never return a platform homepage or generic search-results page. Return concise facts and exact direct URLs only; do not invent an account.`;
 
   const mapsToolConfig = hasLocation

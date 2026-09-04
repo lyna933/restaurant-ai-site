@@ -33,6 +33,7 @@ import { QRCodeModal } from './components/QRCodeModal';
 import { ToastNotification } from './components/ToastNotification';
 import { TRANSLATIONS } from './utils/translations';
 import { brandThemeStyle, inferBrandStyle, layoutClassName } from './utils/brandTheme';
+import { mergeBrandRefresh, mergeSocialProfiles, withKnownSocials } from './utils/socialProfiles';
 
 import { 
   Sparkles, 
@@ -123,8 +124,8 @@ const applyBrandLocalization = (brand: BrandConfig, localization: any, language:
 
 export default function App() {
   // Multi-Tenant Brand State
-  const [availableBrands, setAvailableBrands] = useState<BrandConfig[]>(AVAILABLE_BRANDS);
-  const [currentBrand, setCurrentBrand] = useState<BrandConfig>(AVAILABLE_BRANDS[0]);
+  const [availableBrands, setAvailableBrands] = useState<BrandConfig[]>(() => AVAILABLE_BRANDS.map(withKnownSocials));
+  const [currentBrand, setCurrentBrand] = useState<BrandConfig>(() => withKnownSocials(AVAILABLE_BRANDS[0]));
   const [isAIWorkflowOpen, setIsAIWorkflowOpen] = useState(true);
   
   // Language
@@ -169,28 +170,7 @@ export default function App() {
       : `${displayBrand.name} · ${t.reviewsTitle}`;
   }, [displayBrand.name, displayBrand.nameZh, isZh, language, t.reviewsTitle]);
 
-  const directSocialProfiles = displayBrand.socials.filter((social) => {
-    try {
-      const url = new URL(social.url);
-      const host = url.hostname.toLowerCase().replace(/^www\./, '');
-      const segments = url.pathname.split('/').filter(Boolean);
-      const first = segments[0]?.toLowerCase() || '';
-      if (host.endsWith('instagram.com')) return segments.length === 1 && !['p', 'reel', 'reels', 'explore'].includes(first);
-      if (host.endsWith('facebook.com')) return segments.length >= 1 && !['watch', 'reel', 'reels', 'groups', 'search'].includes(first);
-      if (host.endsWith('tiktok.com')) return segments.length === 1 && first.startsWith('@');
-      if (host.endsWith('youtube.com')) return ['channel', 'c', 'user'].includes(first) || first.startsWith('@');
-      if (host === 'x.com' || host.endsWith('twitter.com')) return segments.length === 1 && !['home', 'search', 'explore', 'intent', 'i'].includes(first);
-      if (host.endsWith('threads.net')) return segments.length === 1 && first.startsWith('@');
-      if (host.endsWith('linkedin.com')) return first === 'company' && segments.length === 2;
-      if (host.endsWith('pinterest.com')) return segments.length === 1 && !['search', 'pin', 'ideas'].includes(first);
-      if (host.endsWith('xiaohongshu.com')) return first === 'user' && segments[1] === 'profile';
-      if (host.endsWith('weibo.com')) return first === 'u' || segments.length === 1;
-      if (host.endsWith('douyin.com')) return first === 'user' && segments.length >= 2;
-      return false;
-    } catch {
-      return false;
-    }
-  });
+  const directSocialProfiles = mergeSocialProfiles(displayBrand.socials);
 
   // Real Dynamic Location State
   const [currentLocation, setCurrentLocation] = useState<LocationDetails>(DEFAULT_LOCATION);
@@ -268,11 +248,11 @@ export default function App() {
       const payload = await response.json();
       if (!response.ok || !payload?.brand) throw new Error(payload?.error || 'Nearby store research failed');
 
-      const refreshedBrand: BrandConfig = {
+      const refreshedBrand: BrandConfig = mergeBrandRefresh(brand, {
         ...payload.brand,
         id: brand.id,
         researchLocation: { latitude: loc.latitude, longitude: loc.longitude },
-      };
+      });
       setAvailableBrands((prev) => [
         refreshedBrand,
         ...prev.filter((item) => item.id !== brand.id),
@@ -311,11 +291,11 @@ export default function App() {
         if (Array.isArray(serverBrands) && serverBrands.length > 0) {
           setAvailableBrands((prev) => {
             const incomingById = new Map(
-              serverBrands.map((brand: BrandConfig) => [brand.id, brand] as const),
+              serverBrands.map((brand: BrandConfig) => [brand.id, withKnownSocials(brand)] as const),
             );
             const existingIds = new Set(prev.map((brand) => brand.id));
-            const refreshedExisting = prev.map((brand) => incomingById.get(brand.id) || brand);
-            const newlyGenerated = serverBrands.filter((brand: BrandConfig) => !existingIds.has(brand.id));
+            const refreshedExisting = prev.map((brand) => incomingById.has(brand.id) ? mergeBrandRefresh(brand, incomingById.get(brand.id)!) : brand);
+            const newlyGenerated = serverBrands.filter((brand: BrandConfig) => !existingIds.has(brand.id)).map(withKnownSocials);
             return [...refreshedExisting, ...newlyGenerated];
           });
         }
@@ -352,7 +332,7 @@ export default function App() {
   // Handle dynamically generated brand from AI Workflow
   const handleAddGeneratedBrand = (newBrand: BrandConfig) => {
     const locatedBrand = {
-      ...newBrand,
+      ...withKnownSocials(newBrand),
       researchLocation: { latitude: currentLocation.latitude, longitude: currentLocation.longitude },
     };
     setAvailableBrands((prev) => [locatedBrand, ...prev.filter((b) => b.id !== locatedBrand.id)]);
